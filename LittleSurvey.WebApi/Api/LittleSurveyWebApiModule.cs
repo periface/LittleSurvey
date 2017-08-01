@@ -4,10 +4,11 @@ using Abp.Application.Services;
 using Abp.Configuration.Startup;
 using Abp.Modules;
 using Abp.WebApi;
+using Survey.Application;
 
 namespace LittleSurvey.Api
 {
-    [DependsOn(typeof(AbpWebApiModule), typeof(LittleSurveyApplicationModule))]
+    [DependsOn(typeof(AbpWebApiModule), typeof(LittleSurveyApplicationModule), typeof(SurveyApplicationModule))]
     public class LittleSurveyWebApiModule : AbpModule
     {
         public override void Initialize()
@@ -17,7 +18,9 @@ namespace LittleSurvey.Api
             Configuration.Modules.AbpWebApi().DynamicApiControllerBuilder
                 .ForAll<IApplicationService>(typeof(LittleSurveyApplicationModule).Assembly, "app")
                 .Build();
-
+            Configuration.Modules.AbpWebApi().DynamicApiControllerBuilder
+                .ForAll<IApplicationService>(typeof(SurveyApplicationModule).Assembly, "survey")
+                .Build();
             Configuration.Modules.AbpWebApi().HttpConfiguration.Filters.Add(new HostAuthenticationFilter("Bearer"));
         }
     }
