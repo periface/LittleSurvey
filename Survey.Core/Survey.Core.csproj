@@ -86,8 +86,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Answer.cs" />
+    <Compile Include="Entities\OfferedAnswer.cs" />
+    <Compile Include="Entities\Question.cs" />
     <Compile Include="Entities\Survey.cs" />
+    <Compile Include="Entities\SurveyQuestion.cs" />
+    <Compile Include="Entities\SurveyQuestionAnswer.cs" />
     <Compile Include="Managers\Questions\IQuestionManager.cs" />
+    <Compile Include="Managers\Questions\QuestionManager.cs" />
     <Compile Include="Managers\Surveys\DomainDto\SurveyWithQuestionsDto.cs" />
     <Compile Include="Managers\Surveys\ISurveyManager.cs" />
     <Compile Include="Managers\Surveys\SurveyManager.cs" />

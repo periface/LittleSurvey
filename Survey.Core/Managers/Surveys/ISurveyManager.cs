@@ -37,27 +37,33 @@ namespace Survey.Core.Manager
         /// Sets the requested question to the survey
         /// </summary>
         /// <param name="questionId"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        Task AddQuestionAsync(int questionId);
+        Task AddQuestionAsync(int questionId, int surveyId);
+
         /// <summary>
         /// Sets the requested question to the survey
         /// </summary>
         /// <param name="question"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        Task AddQuestionAsync(Question question);
+        Task AddQuestionAsync(Question question, int surveyId);
 
         /// <summary>
         /// Sets the requested question to the survey
         /// </summary>
         /// <param name="questionId"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        void AddQuestion(int questionId);
+        void AddQuestion(int questionId, int surveyId);
+
         /// <summary>
         /// Sets the requested question to the survey
         /// </summary>
         /// <param name="question"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        void AddQuestion(Question question);
+        void AddQuestion(Question question, int surveyId);
 
         /// <summary>
         /// Removes the question from the survey

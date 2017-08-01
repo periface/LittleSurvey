@@ -13,8 +13,8 @@ namespace Survey.Core.Managers.Questions
         int CreateQuestion(string text);
 
 
-        Task<int> EditQuestionAsync(int questionId,string text);
-        int EditQuestion(int questionId, string text);
+        Task EditQuestionAsync(int questionId, string text);
+        void EditQuestion(int questionId, string text);
 
 
         Task<int> RemoveQuestionAsync(int questionId, string text);
