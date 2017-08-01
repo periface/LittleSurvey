@@ -1,10 +1,20 @@
 ﻿using System.Threading.Tasks;
+using Abp.Domain.Repositories;
 using Survey.Core.Entities;
+using Survey.Core.Manager;
 
-namespace Survey.Core.Manager
+namespace Survey.Core.Managers.Surveys
 {
     public class SurveyManager : ISurveyManager
     {
+        private readonly IRepository<Entities.Survey> _surveyRepository;
+        private readonly IRepository<Question> _questionRepository;
+        public SurveyManager(IRepository<Entities.Survey> surveyRepository, IRepository<Question> questionRepository)
+        {
+            _surveyRepository = surveyRepository;
+            this._questionRepository = questionRepository;
+        }
+
         public Task CreateSurveyAsync(Entities.Survey survey)
         {
             throw new System.NotImplementedException();

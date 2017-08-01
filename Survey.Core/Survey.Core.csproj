@@ -87,13 +87,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Survey.cs" />
-    <Compile Include="Manager\ISurveyManager.cs" />
-    <Compile Include="Manager\SurveyManager.cs" />
+    <Compile Include="Managers\Questions\IQuestionManager.cs" />
+    <Compile Include="Managers\Surveys\DomainDto\SurveyWithQuestionsDto.cs" />
+    <Compile Include="Managers\Surveys\ISurveyManager.cs" />
+    <Compile Include="Managers\Surveys\SurveyManager.cs" />
     <Compile Include="SurveyCoreModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Managers\Questions\DomainDto\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
