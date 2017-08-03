@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using Shouldly;
 using Survey.Application.SurveyService;
@@ -31,7 +33,7 @@ namespace LittleSurvey.Tests.Surveys
         [Fact]
         public async Task CreateAndSetQuestion()
         {
-            LogoutAsDefaultTenant();
+            LoginAsDefaultTenantAdmin();
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
             var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
@@ -44,16 +46,12 @@ namespace LittleSurvey.Tests.Surveys
                 await _surveyAppService.AssignQuestionToSurvey(surveyId, questionId);
                 var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
                 questionAssignment.ShouldNotBeNull();
-
             });
-
-
-
         }
         [Fact]
         public async Task CreateOfferedAnswersAndSet_Test()
         {
-            LogoutAsDefaultTenant();
+            LoginAsDefaultTenantAdmin();
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
             var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
@@ -78,14 +76,15 @@ namespace LittleSurvey.Tests.Surveys
                 idMalo.ShouldNotBe(0);
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idBueno);
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idMalo);
-                
+
                 /*-----Survey pre-defined-answers*/
             });
         }
         [Fact]
         public async Task SimulateAnswering()
         {
-            LogoutAsDefaultTenant();
+            LoginAsDefaultTenantAdmin();
+
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
             var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
@@ -114,16 +113,48 @@ namespace LittleSurvey.Tests.Surveys
                 /*Survey answers*/
 
                 var survey = await _surveyAppService.GetSurvey(guid);
-                foreach (var surveyAnswer in survey.Answers)
+                await MockAnswers(survey);
+                var answeredSurvey = await _surveyAppService.GetSurvey(guid);
+
+                answeredSurvey.Answers.Count.ShouldNotBe(0);
+
+                foreach (var answeredSurveyAnswer in answeredSurvey.Answers)
                 {
+                    answeredSurveyAnswer.OfferedAnswers.Count.ShouldNotBe(0);
 
+                    answeredSurveyAnswer.IsAnswered.ShouldBe(true);
 
-
-
+                    answeredSurveyAnswer.OfferedAnswerIds.Length.ShouldNotBe(0);
                 }
+
                 /*-----Survey answers*/
             });
         }
+
+        private async Task MockAnswers(SurveyForUserDto survey)
+        {
+            foreach (var surveyAnswer in survey.Answers)
+            {
+                int randomAnswer = GetRandomAnswer(surveyAnswer.OfferedAnswers);
+                await _surveyAppService.AnswerQuestion(new AnswerInputDto()
+                {
+                    OfferedAnswerIds = new[] { randomAnswer },
+                    OtherText = string.Empty,
+                    //Id holds the questionId
+                    QuestionId = surveyAnswer.Id,
+                    SurveyId = survey.Id
+                });
+            }
+        }
+
+        private int GetRandomAnswer(List<OfferedAnswerDto> surveyAnswerOfferedAnswers)
+        {
+            var offeredAnswerDto = surveyAnswerOfferedAnswers.OrderBy(a => Guid.NewGuid()).FirstOrDefault();
+            if (offeredAnswerDto != null)
+                return offeredAnswerDto.Id;
+            return 0;
+        }
+
         [Fact]
         public async Task CreateSetQuestionAndRemove()
         {

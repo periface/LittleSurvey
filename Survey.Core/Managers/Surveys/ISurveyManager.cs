@@ -99,7 +99,7 @@ namespace Survey.Core.Managers.Surveys
         void RemoveQuestion(Question question,Entities.Survey survey);
 
         Entities.Survey GetSurveyFromUrl(string url);
-        IDictionary<Question,Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId);
+        IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId);
         List<Question> GetQuestions(int surveyId);
     }
 }

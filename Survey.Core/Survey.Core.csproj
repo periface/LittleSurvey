@@ -73,6 +73,7 @@
       <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Linq.Dynamic.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0f07ec44de6ac832, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Linq.Dynamic.Core.1.0.7.3\lib\net46\System.Linq.Dynamic.Core.dll</HintPath>
@@ -89,6 +90,7 @@
     <Compile Include="Entities\Answer.cs" />
     <Compile Include="Entities\OfferedAnswer.cs" />
     <Compile Include="Entities\Question.cs" />
+    <Compile Include="Entities\QuestionWithOffered.cs" />
     <Compile Include="Entities\SelectedAnswer.cs" />
     <Compile Include="Entities\Survey.cs" />
     <Compile Include="Entities\SurveyQuestion.cs" />

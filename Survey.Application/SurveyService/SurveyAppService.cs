@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Abp.Application.Services;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
@@ -12,20 +14,18 @@ using Survey.Core.Managers.Surveys;
 
 namespace Survey.Application.SurveyService
 {
-    public class SurveyAppService : ISurveyAppService
+    public class SurveyAppService : ApplicationService,ISurveyAppService
     {
         private readonly IRepository<Core.Entities.Survey> _surveyRepository;
         private readonly ISurveyManager _surveyManager;
         private readonly IQuestionManager _questionManager;
-        public IAbpSession AbpSession;
-        public ILogger Logger;
-        public SurveyAppService(ISurveyManager surveyManager, IQuestionManager questionManager, IRepository<Core.Entities.Survey> surveyRepository)
+        private readonly IRepository<Answer> _answerRepository;
+        public SurveyAppService(ISurveyManager surveyManager, IQuestionManager questionManager, IRepository<Core.Entities.Survey> surveyRepository, IRepository<Answer> answerRepository)
         {
             _surveyManager = surveyManager;
             _questionManager = questionManager;
             _surveyRepository = surveyRepository;
-            Logger = NullLogger.Instance;
-            AbpSession = NullAbpSession.Instance;
+            _answerRepository = answerRepository;
         }
 
         public async Task<int> CreateEditSurvey(SurveyInputDto input)
@@ -80,7 +80,8 @@ namespace Survey.Application.SurveyService
                 Answers = BuildAnswers(answerAndQuestionsForUser),
                 Description = survey.Description,
                 EndDateTime = survey.EndDateTime,
-                StartDateTime = survey.EndDateTime
+                StartDateTime = survey.StartDateTime,
+                Id = survey.Id
             };
         }
 
@@ -94,7 +95,7 @@ namespace Survey.Application.SurveyService
             await _questionManager.SetPredefinedAnswer(surveyId, questionId,idPredefinedAnswer);
         }
 
-        private List<QuestionDto> BuildAnswers(IDictionary<Question, Answer> answerAndQuestionsForUser)
+        private List<QuestionDto> BuildAnswers(IDictionary<QuestionWithOffered, Answer> answerAndQuestionsForUser)
         {
             var result = new List<QuestionDto>();
 
@@ -102,10 +103,13 @@ namespace Survey.Application.SurveyService
             {
                 result.Add(new QuestionDto()
                 {
-                    AllowMultipleAnswers = answer.Key.AllowMultipleAnswers,
+                    AllowMultipleAnswers = answer.Key.Question.AllowMultipleAnswers,
                     OtherText = answer.Value.OtherText,
-                    QuestionText = answer.Key.QuestionText,
-                    QuestionType = answer.Key.QuestionType
+                    Id = answer.Key.Question.Id,
+                    QuestionText = answer.Key.Question.QuestionText,
+                    QuestionType = answer.Key.Question.QuestionType,
+                    OfferedAnswers = answer.Key.OfferedAnswers.Select(a=>a.MapTo<OfferedAnswerDto>()).ToList(),
+                    OfferedAnswerIds = answer.Value.SelectedAnswers.Select(a=>a.Id).ToArray()
                 });
             }
 
@@ -115,6 +119,11 @@ namespace Survey.Application.SurveyService
         public async Task AnswerQuestion(AnswerInputDto answer)
         {
             await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText,AbpSession.UserId);
+        }
+
+        public int GetAllAnswers()
+        {
+           return _answerRepository.Count();
         }
     }
 }

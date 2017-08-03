@@ -13,5 +13,8 @@ namespace Survey.Application.SurveyService
         Task<SurveyForUserDto> GetSurvey(string url);
         Task<int> AddPredefinedAnswer(string bueno);
         Task SetOfferedAnswer(int surveyId, int questionId, int idMalo);
+        Task AnswerQuestion(AnswerInputDto answer);
+
+        int GetAllAnswers();
     }
 }

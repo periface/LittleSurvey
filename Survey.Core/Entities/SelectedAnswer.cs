@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Entities.Auditing;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities.Auditing;
 
 namespace Survey.Core.Entities
 {
@@ -9,5 +10,7 @@ namespace Survey.Core.Entities
     {
         public int SelectedAnswerId { get; set; }
         public int AnswerId { get; set; }
+        [ForeignKey("AnswerId")]
+        public virtual Answer Answer { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Entities;
+﻿using System.Collections.Generic;
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 
 namespace Survey.Core.Entities
@@ -12,7 +13,7 @@ namespace Survey.Core.Entities
         public int QuestionId { get; set; }
         public int OfferedAnswerId { get; set; }
         public string OtherText { get; set; }
-
+        public ICollection<SelectedAnswer> SelectedAnswers { get; set; }
         public Answer()
         {
             

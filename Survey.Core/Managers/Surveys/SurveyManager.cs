@@ -15,13 +15,15 @@ namespace Survey.Core.Managers.Surveys
         private readonly IRepository<SurveyQuestion> _surveyQuestionRepository;
         private readonly IRepository<Answer> _answerRepository;
         private readonly IRepository<SurveyQuestionAnswer> _surveyQuestionAnswerRepository;
-        public SurveyManager(IRepository<Entities.Survey> surveyRepository, IRepository<Question> questionRepository, IRepository<SurveyQuestion> surveyQuestionRepository, IRepository<Answer> answerRepository, IRepository<SurveyQuestionAnswer> surveyQuestionAnswerRepository)
+        private readonly IRepository<OfferedAnswer> _offeredAnswerRepository;
+        public SurveyManager(IRepository<Entities.Survey> surveyRepository, IRepository<Question> questionRepository, IRepository<SurveyQuestion> surveyQuestionRepository, IRepository<Answer> answerRepository, IRepository<SurveyQuestionAnswer> surveyQuestionAnswerRepository, IRepository<OfferedAnswer> offeredAnswerRepository)
         {
             _surveyRepository = surveyRepository;
             _questionRepository = questionRepository;
             _surveyQuestionRepository = surveyQuestionRepository;
             _answerRepository = answerRepository;
             _surveyQuestionAnswerRepository = surveyQuestionAnswerRepository;
+            _offeredAnswerRepository = offeredAnswerRepository;
         }
 
         public Task<int> CreateSurveyAsync(Entities.Survey survey)
@@ -164,32 +166,54 @@ namespace Survey.Core.Managers.Surveys
             }
             return questions;
         }
-        public IDictionary<Question, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId)
+        public IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId)
         {
-            var result = new Dictionary<Question,Answer>();
+            var result = new Dictionary<QuestionWithOffered, Answer>();
 
-            List<Question> questions = new EditableList<Question>();
+            List<QuestionWithOffered> questionWithOffereds = new EditableList<QuestionWithOffered>();
             var questionAssignment = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
 
             foreach (var surveyQuestion in questionAssignment)
             {
                 var question = _questionRepository.Get(surveyQuestion.QuestionId);
 
-                questions.Add(question);
+                var questionWithOffered = new QuestionWithOffered()
+                {
+                    Question = question,
+                    OfferedAnswers = GetOfferedAnswers(question.Id,surveyId).ToList()
+                };
+                questionWithOffereds.Add(questionWithOffered);
             }
 
 
-            foreach (var question in questions)
+            foreach (var question in questionWithOffereds)
             {
+                var allAnswers = _answerRepository.GetAllList();
                 //Answer from the user 
                 var answer =
-                    _answerRepository.FirstOrDefault(a => a.QuestionId == question.Id &&
-                                                          a.CreatorUserId == abpSessionUserId) ?? new Answer();
+                    _answerRepository.GetAllIncluding(a=>a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
+                                                          a.CreatorUserId == abpSessionUserId);
+
+                if(answer == null) answer = new Answer()
+                {
+                    SelectedAnswers = new List<SelectedAnswer>()
+                };
 
                 result.Add(question,answer);
             }
 
             return result;
+        }
+
+        private IEnumerable<OfferedAnswer> GetOfferedAnswers(int questionId, int surveyId)
+        {
+            var assignments =
+                _surveyQuestionAnswerRepository.GetAllList(a => a.QuestionId == questionId && a.SurveyId == surveyId);
+            foreach (var surveyQuestionAnswer in assignments)
+            {
+                var elm = _offeredAnswerRepository.Get(surveyQuestionAnswer.OfferedAnswerId);
+                yield return elm;
+            }
         }
     }
 }

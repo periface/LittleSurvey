@@ -167,6 +167,10 @@
     <Compile Include="Migrations\201708031513348_Questions.Designer.cs">
       <DependentUpon>201708031513348_Questions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708032101396_SelectedAnswerNP.cs" />
+    <Compile Include="Migrations\201708032101396_SelectedAnswerNP.Designer.cs">
+      <DependentUpon>201708032101396_SelectedAnswerNP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="LittleSurveyDataModule.cs" />
@@ -220,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708031513348_Questions.resx">
       <DependentUpon>201708031513348_Questions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708032101396_SelectedAnswerNP.resx">
+      <DependentUpon>201708032101396_SelectedAnswerNP.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
