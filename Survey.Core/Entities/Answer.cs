@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Entities.Auditing;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
 
 namespace Survey.Core.Entities
 {
@@ -19,11 +20,10 @@ namespace Survey.Core.Entities
         /// <summary>
         /// For convenience only
         /// </summary>
-        public Answer(int surveyId,int questionId,int offeredAnswerId,string otherText)
+        public Answer(int surveyId,int questionId,string otherText)
         {
             SurveyId = surveyId;
             QuestionId = questionId;
-            OfferedAnswerId = offeredAnswerId;
             OtherText = otherText;
         }
         /// <summary>

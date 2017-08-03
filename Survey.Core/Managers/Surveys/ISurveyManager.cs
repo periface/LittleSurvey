@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abp.Domain.Services;
 using Survey.Core.Entities;
 
-namespace Survey.Core.Manager
+namespace Survey.Core.Managers.Surveys
 {
     public interface ISurveyManager : IDomainService
     {
@@ -11,7 +12,7 @@ namespace Survey.Core.Manager
         /// </summary>
         /// <param name="survey"></param>
         /// <returns></returns>
-        Task CreateSurveyAsync(Entities.Survey survey);
+        Task<int> CreateSurveyAsync(Entities.Survey survey);
         /// <summary>
         /// Creates a new survey
         /// </summary>
@@ -69,26 +70,36 @@ namespace Survey.Core.Manager
         /// Removes the question from the survey
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        Task RemoveQuestionAsync(int id);
+        Task RemoveQuestionAsync(int id, int surveyId);
+
         /// <summary>
         /// Removes the question from the survey
         /// </summary>
         /// <param name="question"></param>
+        /// <param name="survey"></param>
         /// <returns></returns>
-        Task RemoveQuestionAsync(Question question);
+        Task RemoveQuestionAsync(Question question, Entities.Survey survey);
 
         /// <summary>
         /// Removes the question from the survey
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="surveyId"></param>
         /// <returns></returns>
-        Task RemoveQuestion(int id);
+        void RemoveQuestion(int id,int surveyId);
+
         /// <summary>
         /// Removes the question from the survey
         /// </summary>
         /// <param name="question"></param>
+        /// <param name="survey"></param>
         /// <returns></returns>
-        Task RemoveQuestion(Question question);
+        void RemoveQuestion(Question question,Entities.Survey survey);
+
+        Entities.Survey GetSurveyFromUrl(string url);
+        IDictionary<Question,Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId);
+        List<Question> GetQuestions(int surveyId);
     }
 }

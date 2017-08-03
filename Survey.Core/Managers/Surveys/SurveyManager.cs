@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
+using Abp.UI;
+using Castle.Components.DictionaryAdapter;
 using Survey.Core.Entities;
-using Survey.Core.Manager;
 
 namespace Survey.Core.Managers.Surveys
 {
@@ -11,41 +13,63 @@ namespace Survey.Core.Managers.Surveys
         private readonly IRepository<Entities.Survey> _surveyRepository;
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<SurveyQuestion> _surveyQuestionRepository;
-        public SurveyManager(IRepository<Entities.Survey> surveyRepository, IRepository<Question> questionRepository, IRepository<SurveyQuestion> surveyQuestionRepository)
+        private readonly IRepository<Answer> _answerRepository;
+        private readonly IRepository<SurveyQuestionAnswer> _surveyQuestionAnswerRepository;
+        public SurveyManager(IRepository<Entities.Survey> surveyRepository, IRepository<Question> questionRepository, IRepository<SurveyQuestion> surveyQuestionRepository, IRepository<Answer> answerRepository, IRepository<SurveyQuestionAnswer> surveyQuestionAnswerRepository)
         {
             _surveyRepository = surveyRepository;
             _questionRepository = questionRepository;
-            this._surveyQuestionRepository = surveyQuestionRepository;
+            _surveyQuestionRepository = surveyQuestionRepository;
+            _answerRepository = answerRepository;
+            _surveyQuestionAnswerRepository = surveyQuestionAnswerRepository;
         }
 
-        public Task CreateSurveyAsync(Entities.Survey survey)
+        public Task<int> CreateSurveyAsync(Entities.Survey survey)
         {
+
+            if (_surveyRepository.GetAllList(a => a.SurveyUrl.ToUpper().Contains(survey.SurveyUrl.ToUpper())).Any())
+            {
+                throw new UserFriendlyException($"Ya hay una encuesta con esta url: {survey.SurveyUrl}");
+            }
+
             return _surveyRepository.InsertOrUpdateAndGetIdAsync(survey);
         }
 
         public void CreateSurvey(Entities.Survey survey)
         {
+            if (_surveyRepository.GetAllList(a => a.SurveyUrl.ToUpper().Contains(survey.SurveyUrl.ToUpper())).Any())
+            {
+                throw new UserFriendlyException($"Ya hay una encuesta con esta url: {survey.SurveyUrl}");
+            }
             _surveyRepository.InsertOrUpdateAndGetId(survey);
         }
 
         public Task EditSurveyAsync(Entities.Survey survey)
         {
+            if (_surveyRepository.GetAllList(a => a.SurveyUrl.ToUpper().Contains(survey.SurveyUrl.ToUpper()) && a.Id != survey.Id).Any())
+            {
+                throw new UserFriendlyException($"Ya hay una encuesta con esta url: {survey.SurveyUrl}");
+            }
             return _surveyRepository.InsertOrUpdateAndGetIdAsync(survey);
         }
 
         public void EditSurvey(Entities.Survey survey)
         {
+            if (_surveyRepository.GetAllList(a => a.SurveyUrl.ToUpper().Contains(survey.SurveyUrl.ToUpper()) && a.Id != survey.Id).Any())
+            {
+                throw new UserFriendlyException($"Ya hay una encuesta con esta url: {survey.SurveyUrl}");
+            }
             _surveyRepository.InsertOrUpdateAndGetId(survey);
         }
 
         public Task DeleteSurveyAsync(Entities.Survey survey)
         {
-            throw new System.NotImplementedException();
+            return _surveyRepository.DeleteAsync(survey);
         }
 
         public void DeleteSurvey(Entities.Survey survey)
         {
-            throw new System.NotImplementedException();
+            _surveyRepository.Delete(survey);
         }
 
         public Task AddQuestionAsync(int questionId,int surveyId)
@@ -93,24 +117,79 @@ namespace Survey.Core.Managers.Surveys
             _surveyQuestionRepository.InsertOrUpdateAndGetId(new SurveyQuestion(surveyId, question.Id));
         }
 
-        public Task RemoveQuestionAsync(int id)
+        public Task RemoveQuestionAsync(int id,int surveyId)
         {
-            throw new System.NotImplementedException();
+            var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == id && a.SurveyId == surveyId);
+            if(questionAssignment == null) return Task.CompletedTask;
+            return _surveyQuestionRepository.DeleteAsync(questionAssignment);
         }
 
-        public Task RemoveQuestionAsync(Question question)
+        public Task RemoveQuestionAsync(Question question,Entities.Survey survey)
         {
-            throw new System.NotImplementedException();
+            var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == question.Id && a.SurveyId == survey.Id);
+            if (questionAssignment == null) return Task.CompletedTask;
+            return _surveyQuestionRepository.DeleteAsync(questionAssignment);
         }
 
-        public Task RemoveQuestion(int id)
+        public void RemoveQuestion(int id, int surveyId)
         {
-            throw new System.NotImplementedException();
+            var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == id && a.SurveyId == surveyId);
+            if (questionAssignment == null) return;
+            _surveyQuestionRepository.Delete(questionAssignment);
         }
 
-        public Task RemoveQuestion(Question question)
+        public void RemoveQuestion(Question question, Entities.Survey survey)
         {
-            throw new System.NotImplementedException();
+            var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == question.Id && a.SurveyId == survey.Id);
+            if (questionAssignment == null) return;
+            _surveyQuestionRepository.Delete(questionAssignment);
+        }
+
+        public Entities.Survey GetSurveyFromUrl(string url)
+        {
+            var survey = _surveyRepository.FirstOrDefault(a => a.SurveyUrl == url);
+
+            return survey;
+        }
+
+        public List<Question> GetQuestions(int surveyId)
+        {
+            var questionAssignment = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
+            List<Question> questions = new EditableList<Question>();
+            foreach (var surveyQuestion in questionAssignment)
+            {
+                var question = _questionRepository.Get(surveyQuestion.QuestionId);
+
+                questions.Add(question);
+            }
+            return questions;
+        }
+        public IDictionary<Question, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId)
+        {
+            var result = new Dictionary<Question,Answer>();
+
+            List<Question> questions = new EditableList<Question>();
+            var questionAssignment = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
+
+            foreach (var surveyQuestion in questionAssignment)
+            {
+                var question = _questionRepository.Get(surveyQuestion.QuestionId);
+
+                questions.Add(question);
+            }
+
+
+            foreach (var question in questions)
+            {
+                //Answer from the user 
+                var answer =
+                    _answerRepository.FirstOrDefault(a => a.QuestionId == question.Id &&
+                                                          a.CreatorUserId == abpSessionUserId) ?? new Answer();
+
+                result.Add(question,answer);
+            }
+
+            return result;
         }
     }
 }

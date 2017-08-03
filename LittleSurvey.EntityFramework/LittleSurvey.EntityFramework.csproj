@@ -139,6 +139,34 @@
     <Compile Include="Migrations\201708012137588_AbpUpdate.Designer.cs">
       <DependentUpon>201708012137588_AbpUpdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708031457447_Survey.cs" />
+    <Compile Include="Migrations\201708031457447_Survey.Designer.cs">
+      <DependentUpon>201708031457447_Survey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031504207_SurveyQuestions.cs" />
+    <Compile Include="Migrations\201708031504207_SurveyQuestions.Designer.cs">
+      <DependentUpon>201708031504207_SurveyQuestions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031506489_Answers.cs" />
+    <Compile Include="Migrations\201708031506489_Answers.Designer.cs">
+      <DependentUpon>201708031506489_Answers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031508411_OfferedAnswers.cs" />
+    <Compile Include="Migrations\201708031508411_OfferedAnswers.Designer.cs">
+      <DependentUpon>201708031508411_OfferedAnswers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031511338_SelectedAnswers.cs" />
+    <Compile Include="Migrations\201708031511338_SelectedAnswers.Designer.cs">
+      <DependentUpon>201708031511338_SelectedAnswers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031512296_SurveyQuestionAnswers.cs" />
+    <Compile Include="Migrations\201708031512296_SurveyQuestionAnswers.Designer.cs">
+      <DependentUpon>201708031512296_SurveyQuestionAnswers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708031513348_Questions.cs" />
+    <Compile Include="Migrations\201708031513348_Questions.Designer.cs">
+      <DependentUpon>201708031513348_Questions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="LittleSurveyDataModule.cs" />
@@ -160,6 +188,10 @@
       <Project>{17298ea0-af73-4f30-b6f1-2066100d7d74}</Project>
       <Name>LittleSurvey.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Survey.Core\Survey.Core.csproj">
+      <Project>{ABB57A9D-7E78-42DD-AC19-7DF685471B5A}</Project>
+      <Name>Survey.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201701271145151_AbpZero_Initial.resx">
@@ -167,6 +199,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201708012137588_AbpUpdate.resx">
       <DependentUpon>201708012137588_AbpUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031457447_Survey.resx">
+      <DependentUpon>201708031457447_Survey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031504207_SurveyQuestions.resx">
+      <DependentUpon>201708031504207_SurveyQuestions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031506489_Answers.resx">
+      <DependentUpon>201708031506489_Answers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031508411_OfferedAnswers.resx">
+      <DependentUpon>201708031508411_OfferedAnswers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031511338_SelectedAnswers.resx">
+      <DependentUpon>201708031511338_SelectedAnswers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031512296_SurveyQuestionAnswers.resx">
+      <DependentUpon>201708031512296_SurveyQuestionAnswers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708031513348_Questions.resx">
+      <DependentUpon>201708031513348_Questions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -176,6 +176,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sessions\SessionAppService_Tests.cs" />
     <Compile Include="LittleSurveyTestBase.cs" />
+    <Compile Include="Surveys\SurveyAppService_Tests.cs" />
     <Compile Include="Users\UserAppService_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +197,14 @@
     <ProjectReference Include="..\..\LittleSurvey.EntityFramework\LittleSurvey.EntityFramework.csproj">
       <Project>{3979F157-DEB0-4878-AB1D-4CEF6B5A1300}</Project>
       <Name>LittleSurvey.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Survey.Application\Survey.Application.csproj">
+      <Project>{3590E6F1-F872-42A2-8698-5BF05E0FFD6C}</Project>
+      <Name>Survey.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Survey.Core\Survey.Core.csproj">
+      <Project>{ABB57A9D-7E78-42DD-AC19-7DF685471B5A}</Project>
+      <Name>Survey.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,12 +4,13 @@ using Abp.TestBase;
 using Abp.Zero.Configuration;
 using Castle.MicroKernel.Registration;
 using NSubstitute;
+using Survey.Application;
 
 namespace LittleSurvey.Tests
 {
     [DependsOn(
         typeof(LittleSurveyApplicationModule),
-        typeof(LittleSurveyDataModule),
+        typeof(LittleSurveyDataModule), typeof(SurveyApplicationModule),
         typeof(AbpTestBaseModule))]
     public class LittleSurveyTestModule : AbpModule
     {

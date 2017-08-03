@@ -16,12 +16,14 @@ namespace Survey.Core.Entities
         {
             
         }
+
         /// <summary>
         /// Creates a new survey instance (only for convenience)
         /// </summary>
         /// <param name="description"></param>
         /// <param name="daysFromNow"></param>
-        public Survey(string description,int daysFromNow)
+        /// <param name="url"></param>
+        public Survey(string description,int daysFromNow,string url)
         {
             Description = description;
             StartDateTime = DateTime.Now;
@@ -30,5 +32,6 @@ namespace Survey.Core.Entities
         public string Description { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
+        public string SurveyUrl { get; set; }
     }
 }

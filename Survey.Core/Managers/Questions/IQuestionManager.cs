@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Domain.Services;
+using Survey.Core.Entities;
 
 namespace Survey.Core.Managers.Questions
 {
@@ -23,5 +24,9 @@ namespace Survey.Core.Managers.Questions
 
         Task SetSurveyAsync(int questionId,int surveyId);
         void SetSurvey(int questionId, int surveyId);
+        Task<List<Question>> GetQuestionsFromSurvey(int surveyId);
+        Task Answer(int surveyId, int questionId, int[] offeredAnswersId, string otherText, long? abpSessionUserId);
+        Task<int> CreatePredefinedAnswer(string txt);
+        Task SetPredefinedAnswer(int surveyId, int questionId, int idPredefinedAnswer);
     }
 }
