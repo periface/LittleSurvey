@@ -19,7 +19,10 @@ namespace LittleSurvey.Tests.Surveys
         {
             _surveyAppService = Resolve<ISurveyAppService>();
         }
-
+        /// <summary>
+        /// Simula la creación de una encuesta
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task CreateSurveyTest()
         {
@@ -30,6 +33,10 @@ namespace LittleSurvey.Tests.Surveys
                 survey.ShouldNotBeNull();
             });
         }
+        /// <summary>
+        /// Simula la creación de una encuesta y agrega una pregunta
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task CreateAndSetQuestion()
         {
@@ -37,17 +44,23 @@ namespace LittleSurvey.Tests.Surveys
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
             var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
+            //Crea una pregunta
             var questionId = await CreateFakeQuestion("¿Como califica el servicio?");
             questionId.ShouldNotBe(0);
             await UsingDbContextAsync(async context =>
             {
                 var question = await context.Questions.FirstOrDefaultAsync(a => a.Id == questionId);
                 question.ShouldNotBeNull();
+                //Asigna la pregunta a la encuesta
                 await _surveyAppService.AssignQuestionToSurvey(surveyId, questionId);
                 var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
                 questionAssignment.ShouldNotBeNull();
             });
         }
+        /// <summary>
+        /// Simula la creación de una encuesta, agrega una pregunta y agrega respuestas predefinidas a la pregunta
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task CreateOfferedAnswersAndSet_Test()
         {
@@ -65,7 +78,7 @@ namespace LittleSurvey.Tests.Surveys
                 var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
                 questionAssignment.ShouldNotBeNull();
 
-                /*Survey pre-defined-answers*/
+                /*Crea las respuestas predefinidas*/
 
                 int idBueno = await _surveyAppService.AddPredefinedAnswer("Bueno");
 
@@ -74,12 +87,17 @@ namespace LittleSurvey.Tests.Surveys
                 int idMalo = await _surveyAppService.AddPredefinedAnswer("Malo");
 
                 idMalo.ShouldNotBe(0);
+
+                /*Asigna las respuestas predefinidas a la pregunta*/
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idBueno);
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idMalo);
 
-                /*-----Survey pre-defined-answers*/
             });
         }
+        /// <summary>
+        /// Simula la creación de una encuesta completa y despues simula a un usuario contestando la encuesta
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task SimulateAnswering()
         {
@@ -97,8 +115,6 @@ namespace LittleSurvey.Tests.Surveys
                 await _surveyAppService.AssignQuestionToSurvey(surveyId, questionId);
                 var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
                 questionAssignment.ShouldNotBeNull();
-
-                /*Survey pre-defined-answers*/
                 int idBueno = await _surveyAppService.AddPredefinedAnswer("Bueno");
 
                 idBueno.ShouldNotBe(0);
@@ -108,12 +124,13 @@ namespace LittleSurvey.Tests.Surveys
                 idMalo.ShouldNotBe(0);
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idBueno);
                 await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idMalo);
-                /*-----Survey pre-defined-answers*/
 
-                /*Survey answers*/
+                /*Cargamos la encuesta para el cliente...*/
 
                 var survey = await _surveyAppService.GetSurvey(guid);
-                await MockAnswers(survey);
+                await MockAnswers(survey); //-- Simula el llenado de la encuesta
+
+                //Cargamos de nuevo la encuesta, pero ahora esta tendra las respuestas
                 var answeredSurvey = await _surveyAppService.GetSurvey(guid);
 
                 answeredSurvey.Answers.Count.ShouldNotBe(0);
@@ -124,6 +141,7 @@ namespace LittleSurvey.Tests.Surveys
 
                     answeredSurveyAnswer.IsAnswered.ShouldBe(true);
 
+                    //Aqui se almacenan los id´s de las respuestas predefinidas seleccionadas por el cliente
                     answeredSurveyAnswer.OfferedAnswerIds.Length.ShouldNotBe(0);
                 }
 
@@ -135,7 +153,9 @@ namespace LittleSurvey.Tests.Surveys
         {
             foreach (var surveyAnswer in survey.Answers)
             {
+                //Obtiene una respuesta aleatoria de las respuestas ofrecidas
                 int randomAnswer = GetRandomAnswer(surveyAnswer.OfferedAnswers);
+                //Responde la pregunta
                 await _surveyAppService.AnswerQuestion(new AnswerInputDto()
                 {
                     OfferedAnswerIds = new[] { randomAnswer },
