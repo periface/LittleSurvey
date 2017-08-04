@@ -13,5 +13,6 @@ namespace Survey.Application.SurveyService.Dto
         public string Description { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
+        public string SurveyUrl { get; set; }
     }
 }

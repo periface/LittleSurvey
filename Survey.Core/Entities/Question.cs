@@ -18,7 +18,6 @@ namespace Survey.Core.Entities
         }
         public string QuestionText { get; set; }
         public int QuestionType { get; set; }
-        public int Order { get; set; }
         //Only for ui selection
         public bool AllowMultipleAnswers { get; set; }
     }

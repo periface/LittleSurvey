@@ -1,14 +1,29 @@
-﻿using System.Web.Mvc;
+﻿using System.Threading.Tasks;
+using System.Web.Mvc;
 using Abp.Web.Mvc.Authorization;
+using Survey.Application.SurveyService;
 
 namespace LittleSurvey.Web.Controllers
 {
-    [AbpMvcAuthorize]
     public class HomeController : LittleSurveyControllerBase
     {
-        public ActionResult Index()
+        private readonly ISurveyAppService _surveyAppService;
+
+        public HomeController(ISurveyAppService surveyAppService)
         {
-            return View();
+            _surveyAppService = surveyAppService;
         }
-	}
+
+        public  async Task<ActionResult> Index()
+        {
+            var surveys = await _surveyAppService.GetSurveys();
+            return View(surveys);
+        }
+
+        public async Task<ActionResult> Survey(string surveyurl)
+        {
+            var survey = await _surveyAppService.GetSurvey(surveyurl);
+            return View(survey);
+        }
+    }
 }

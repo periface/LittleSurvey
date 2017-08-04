@@ -24,9 +24,9 @@ namespace LittleSurvey.Tests.Surveys
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task CreateSurveyTest()
+        public async Task CreateSurvey_Test()
         {
-            await CreateFakeSurvey("Mi encuesta");
+            await CreateFakeSurveyObject("Mi encuesta");
             await UsingDbContextAsync(async context =>
             {
                 var survey = await context.Surveys.FirstOrDefaultAsync(a => a.Description == "Mi encuesta");
@@ -38,14 +38,14 @@ namespace LittleSurvey.Tests.Surveys
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task CreateAndSetQuestion()
+        public async Task CreateAndSetQuestion_Test()
         {
             LoginAsDefaultTenantAdmin();
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
-            var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
+            var surveyId = await CreateFakeSurveyObject("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
             //Crea una pregunta
-            var questionId = await CreateFakeQuestion("¿Como califica el servicio?");
+            var questionId = await CreateFakeQuestion("¿Como califica el servicio?", true);
             questionId.ShouldNotBe(0);
             await UsingDbContextAsync(async context =>
             {
@@ -66,9 +66,9 @@ namespace LittleSurvey.Tests.Surveys
         {
             LoginAsDefaultTenantAdmin();
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
-            var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
+            var surveyId = await CreateFakeSurveyObject("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
-            var questionId = await CreateFakeQuestion("¿Como califica el servicio?");
+            var questionId = await CreateFakeQuestion("¿Como califica el servicio?", true);
             questionId.ShouldNotBe(0);
             await UsingDbContextAsync(async context =>
             {
@@ -94,94 +94,45 @@ namespace LittleSurvey.Tests.Surveys
 
             });
         }
+
         /// <summary>
         /// Simula la creación de una encuesta completa y despues simula a un usuario contestando la encuesta
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task SimulateAnswering()
+        public async Task SimulateAnswering_Test()
         {
-            LoginAsDefaultTenantAdmin();
 
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
-            var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
-            surveyId.ShouldNotBe(0);
-            var questionId = await CreateFakeQuestion("¿Como califica el servicio?");
-            questionId.ShouldNotBe(0);
-            await UsingDbContextAsync(async context =>
+            await CreateCompleteSurvey(guid);
+            var survey = await _surveyAppService.GetSurvey(guid);
+            await MockAnswers(survey); //-- Simula el llenado de la encuesta
+
+            //Cargamos de nuevo la encuesta, pero ahora esta tendra las respuestas
+            var answeredSurvey = await _surveyAppService.GetSurvey(guid);
+
+            answeredSurvey.Answers.Count.ShouldNotBe(0);
+            answeredSurvey.Answers.Count.ShouldBe(2);
+
+            foreach (var answeredSurveyAnswer in answeredSurvey.Answers)
             {
-                var question = await context.Questions.FirstOrDefaultAsync(a => a.Id == questionId);
-                question.ShouldNotBeNull();
-                await _surveyAppService.AssignQuestionToSurvey(surveyId, questionId);
-                var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
-                questionAssignment.ShouldNotBeNull();
-                int idBueno = await _surveyAppService.AddPredefinedAnswer("Bueno");
+                answeredSurveyAnswer.OfferedAnswers.Count.ShouldNotBe(0);
 
-                idBueno.ShouldNotBe(0);
+                answeredSurveyAnswer.IsAnswered.ShouldBe(true);
 
-                int idMalo = await _surveyAppService.AddPredefinedAnswer("Malo");
-
-                idMalo.ShouldNotBe(0);
-                await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idBueno);
-                await _surveyAppService.SetOfferedAnswer(surveyId, question.Id, idMalo);
-
-                /*Cargamos la encuesta para el cliente...*/
-
-                var survey = await _surveyAppService.GetSurvey(guid);
-                await MockAnswers(survey); //-- Simula el llenado de la encuesta
-
-                //Cargamos de nuevo la encuesta, pero ahora esta tendra las respuestas
-                var answeredSurvey = await _surveyAppService.GetSurvey(guid);
-
-                answeredSurvey.Answers.Count.ShouldNotBe(0);
-
-                foreach (var answeredSurveyAnswer in answeredSurvey.Answers)
-                {
-                    answeredSurveyAnswer.OfferedAnswers.Count.ShouldNotBe(0);
-
-                    answeredSurveyAnswer.IsAnswered.ShouldBe(true);
-
-                    //Aqui se almacenan los id´s de las respuestas predefinidas seleccionadas por el cliente
-                    answeredSurveyAnswer.OfferedAnswerIds.Length.ShouldNotBe(0);
-                }
-
-                /*-----Survey answers*/
-            });
-        }
-
-        private async Task MockAnswers(SurveyForUserDto survey)
-        {
-            foreach (var surveyAnswer in survey.Answers)
-            {
-                //Obtiene una respuesta aleatoria de las respuestas ofrecidas
-                int randomAnswer = GetRandomAnswer(surveyAnswer.OfferedAnswers);
-                //Responde la pregunta
-                await _surveyAppService.AnswerQuestion(new AnswerInputDto()
-                {
-                    OfferedAnswerIds = new[] { randomAnswer },
-                    OtherText = string.Empty,
-                    //Id holds the questionId
-                    QuestionId = surveyAnswer.Id,
-                    SurveyId = survey.Id
-                });
+                //Aqui se almacenan los id´s de las respuestas predefinidas seleccionadas por el cliente
+                answeredSurveyAnswer.OfferedAnswerIds.Length.ShouldNotBe(0);
             }
-        }
 
-        private int GetRandomAnswer(List<OfferedAnswerDto> surveyAnswerOfferedAnswers)
-        {
-            var offeredAnswerDto = surveyAnswerOfferedAnswers.OrderBy(a => Guid.NewGuid()).FirstOrDefault();
-            if (offeredAnswerDto != null)
-                return offeredAnswerDto.Id;
-            return 0;
+            /*-----Survey answers*/
         }
-
         [Fact]
-        public async Task CreateSetQuestionAndRemove()
+        public async Task CreateSetQuestionAndRemove_Test()
         {
             var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
-            var surveyId = await CreateFakeSurvey("Mi encuesta", guid);
+            var surveyId = await CreateFakeSurveyObject("Mi encuesta", guid);
             surveyId.ShouldNotBe(0);
-            var questionId = await CreateFakeQuestion("¿Como califica el servicio?");
+            var questionId = await CreateFakeQuestion("¿Como califica el servicio?", true);
             questionId.ShouldNotBe(0);
             await UsingDbContextAsync(async context =>
             {
@@ -196,15 +147,16 @@ namespace LittleSurvey.Tests.Surveys
                 questionAssignment.ShouldBeNull();
             });
         }
-        private async Task<int> CreateFakeQuestion(string txt)
+        private async Task<int> CreateFakeQuestion(string txt, bool b)
         {
             return await _surveyAppService.CreateQuestion(new QuestionInputDto()
             {
-                QuestionText = txt
+                QuestionText = txt,
+                AllowMultipleAnswers = b
             });
         }
 
-        private async Task<int> CreateFakeSurvey(string name, string url = "")
+        private async Task<int> CreateFakeSurveyObject(string name, string url = "")
         {
             return await _surveyAppService.CreateEditSurvey(new SurveyInputDto()
             {
@@ -212,6 +164,113 @@ namespace LittleSurvey.Tests.Surveys
                 StartDateTime = DateTime.Now,
                 EndDateTime = DateTime.Now.AddDays(5),
                 SurveyUrl = url
+            });
+        }
+        private int GetRandomAnswer(List<OfferedAnswerDto> surveyAnswerOfferedAnswers)
+        {
+            var offeredAnswerDto = surveyAnswerOfferedAnswers.OrderBy(a => Guid.NewGuid()).FirstOrDefault();
+            if (offeredAnswerDto != null)
+                return offeredAnswerDto.Id;
+            return 0;
+        }
+        private async Task MockAnswers(SurveyForUserDto survey)
+        {
+            foreach (var surveyAnswer in survey.Answers)
+            {
+                
+                if (surveyAnswer.AllowMultipleAnswers)
+                {
+                    IEnumerable<int> randoms = GetRandomAnswers(surveyAnswer.OfferedAnswers);
+                    //Responde la pregunta
+                    await _surveyAppService.AnswerQuestion(new AnswerInputDto()
+                    {
+                        OfferedAnswerIds = randoms.ToArray(),
+                        OtherText = string.Empty,
+                        //Id holds the questionId
+                        QuestionId = surveyAnswer.Id,
+                        SurveyId = survey.Id
+                    });
+                }
+                else
+                {
+                    //Obtiene una respuesta aleatoria de las respuestas ofrecidas
+                    int randomAnswer = GetRandomAnswer(surveyAnswer.OfferedAnswers);
+                    //Responde la pregunta
+                    await _surveyAppService.AnswerQuestion(new AnswerInputDto()
+                    {
+                        OfferedAnswerIds = new[] { randomAnswer },
+                        OtherText = string.Empty,
+                        //Id holds the questionId
+                        QuestionId = surveyAnswer.Id,
+                        SurveyId = survey.Id
+                    });
+                }
+
+            }
+        }
+
+        private IEnumerable<int> GetRandomAnswers(List<OfferedAnswerDto> surveyAnswerOfferedAnswers)
+        {
+            var prevIds = new List<int>();
+            foreach (var surveyAnswerOfferedAnswer in surveyAnswerOfferedAnswers)
+            {
+                var offeredAnswerDto = !prevIds.Any() ? surveyAnswerOfferedAnswers.OrderBy(a => Guid.NewGuid()).FirstOrDefault() : surveyAnswerOfferedAnswers.Where(a => !prevIds.Contains(a.Id)).OrderBy(a => Guid.NewGuid()).FirstOrDefault();
+                if (offeredAnswerDto != null)
+                {
+                    prevIds.Add(offeredAnswerDto.Id);
+                    yield return offeredAnswerDto.Id;
+                }
+            }
+        }
+
+        private async Task CreateCompleteSurvey(string guid, string[] questions = null, string[] possibleAnswers = null)
+        {
+            if (questions == null)
+            {
+                questions = new[] { "¿Como califica el servicio?", "¿Como califica el servicio del vendedor" };
+            }
+            if (possibleAnswers == null)
+            {
+                possibleAnswers = new[] { "Excelente", "Bueno", "Malo", "Pesimo" };
+            }
+            LoginAsDefaultTenantAdmin();
+            var ids = new List<int>();
+            var surveyId = await CreateFakeSurveyObject("Mi encuesta", guid);
+            surveyId.ShouldNotBe(0);
+            //For switch true or false
+            var cond = false;
+            foreach (var question in questions)
+            {
+                var questionId = await CreateFakeQuestion(question, cond);
+                questionId.ShouldNotBe(0);
+                ids.Add(questionId);
+                cond = !cond;
+            }
+            await UsingDbContextAsync(async context =>
+            {
+                /*Crea las respuestas predefinidas*/
+                var idspa = new List<int>();
+                foreach (var possibleAnswer in possibleAnswers)
+                {
+                    var idAnswer = await _surveyAppService.AddPredefinedAnswer(possibleAnswer);
+                    idAnswer.ShouldNotBe(0);
+                    idspa.Add(idAnswer);
+                }
+                foreach (var questionId in ids)
+                {
+                    var question = await context.Questions.FirstOrDefaultAsync(a => a.Id == questionId);
+                    question.ShouldNotBeNull();
+                    await _surveyAppService.AssignQuestionToSurvey(surveyId, questionId);
+                    var questionAssignment = await context.SurveyQuestions.FirstOrDefaultAsync(a => a.QuestionId == questionId && a.SurveyId == surveyId);
+                    questionAssignment.ShouldNotBeNull();
+
+                    /*Asigna las respuestas predefinidas a la pregunta*/
+
+                    foreach (var i in idspa)
+                    {
+                        await _surveyAppService.SetOfferedAnswer(surveyId, questionId, i);
+                    }
+                }
             });
         }
     }

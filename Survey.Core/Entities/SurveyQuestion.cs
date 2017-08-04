@@ -34,5 +34,6 @@ namespace Survey.Core.Entities
         }
         public int SurveyId { get; set; }
         public int QuestionId { get; set; }
+        public int Order { get; set; }
     }
 }

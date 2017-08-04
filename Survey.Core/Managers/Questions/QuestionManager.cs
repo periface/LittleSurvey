@@ -26,9 +26,9 @@ namespace Survey.Core.Managers.Questions
             _offeredAnswerRepository = offeredAnswerRepository;
         }
 
-        public Task<int> CreateQuestionAsync(string text)
+        public Task<int> CreateQuestionAsync(string text, bool inputAllowMultipleAnswers)
         {
-            var question = new Question(text);
+            var question = new Question(text){AllowMultipleAnswers = inputAllowMultipleAnswers};
             return _questionRepository.InsertOrUpdateAndGetIdAsync(question);
         }
 

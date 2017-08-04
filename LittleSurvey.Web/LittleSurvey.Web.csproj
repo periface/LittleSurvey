@@ -488,6 +488,7 @@
     <Content Include="Views\Layout\_UserMenuOrLoginLink.cshtml" />
     <Content Include="Views\Tenants\Index.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Home\Survey.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -511,6 +512,10 @@
     <ProjectReference Include="..\LittleSurvey.WebApi\LittleSurvey.WebApi.csproj">
       <Project>{5eb52d3d-09fd-463a-b02a-8d9856bd3724}</Project>
       <Name>LittleSurvey.WebApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Survey.Application\Survey.Application.csproj">
+      <Project>{3590E6F1-F872-42A2-8698-5BF05E0FFD6C}</Project>
+      <Name>Survey.Application</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

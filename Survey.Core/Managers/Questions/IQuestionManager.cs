@@ -10,7 +10,7 @@ namespace Survey.Core.Managers.Questions
 {
     public interface IQuestionManager : IDomainService
     {
-        Task<int> CreateQuestionAsync(string text);
+        Task<int> CreateQuestionAsync(string text, bool inputAllowMultipleAnswers);
         int CreateQuestion(string text);
 
 

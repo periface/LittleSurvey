@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
-using Abp.Runtime.Session;
-using Castle.Core.Logging;
 using Survey.Application.SurveyService.Dto;
 using Survey.Core.Entities;
 using Survey.Core.Managers.Questions;
@@ -45,7 +43,7 @@ namespace Survey.Application.SurveyService
         }
         public async Task<int> CreateQuestion(QuestionInputDto input)
         {
-            return await _questionManager.CreateQuestionAsync(input.QuestionText);
+            return await _questionManager.CreateQuestionAsync(input.QuestionText,input.AllowMultipleAnswers);
         }
         public async Task AssignQuestionToSurvey(int surveyId, int questionId)
         {
@@ -60,9 +58,10 @@ namespace Survey.Application.SurveyService
             throw new NotImplementedException();
         }
 
-        public Task<List<SurveyDto>> GetSurveys()
+        public async Task<List<SurveyDto>> GetSurveys()
         {
-            throw new NotImplementedException();
+            var surveys = await _surveyRepository.GetAllListAsync();
+            return surveys.Select(a=>a.MapTo<SurveyDto>()).ToList();
         }
 
         public Task CreateQuestion(string questionText)
