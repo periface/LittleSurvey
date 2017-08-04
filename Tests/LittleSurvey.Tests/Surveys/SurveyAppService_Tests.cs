@@ -160,6 +160,11 @@ namespace LittleSurvey.Tests.Surveys
                 var check = _surveyAppService.GetQuestion(survey.Id, firstOrDefault.Id);
                 check.NextQuestion.ShouldBe(4);
                 check.PrevQuestion.ShouldBe(2);
+
+
+                var secondCheck = _surveyAppService.GetQuestion(survey.Id,check.NextQuestion);
+                secondCheck.NextQuestion.ShouldBe(0);
+                secondCheck.PrevQuestion.ShouldBe(3);
             }
         }
         private async Task<int> CreateFakeQuestion(string txt, bool b)

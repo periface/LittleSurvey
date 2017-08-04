@@ -73,7 +73,7 @@ namespace Survey.Application.SurveyService
         {
             var survey = _surveyManager.GetSurveyFromUrl(url);
 
-            var answerAndQuestionsForUser = _surveyManager.GetQuestionsWithAnswers(AbpSession.UserId,survey.Id);
+            var answerAndQuestionsForUser = await _surveyManager.GetQuestionsWithAnswersAsync(AbpSession.UserId,survey.Id);
             return new SurveyForUserDto()
             {
                 Answers = BuildAnswers(answerAndQuestionsForUser),
@@ -145,21 +145,21 @@ namespace Survey.Application.SurveyService
             return mapped;
         }
 
-        private Question TryToGetElementAt(List<Question> questions,int index)
+        private Question TryToGetElementAt(IEnumerable<Question> questions,int index)
         {
             try
             {
                 var prevQuestion = questions.ElementAt(index);
                 return prevQuestion;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
         }
         public async Task BulkAnswer(List<AnswerInputDto> answers)
         {
-            foreach (AnswerInputDto answer in answers)
+            foreach (var answer in answers)
             {
                 await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText, AbpSession.UserId);
             }

@@ -74,20 +74,20 @@ namespace Survey.Core.Managers.Surveys
             _surveyRepository.Delete(survey);
         }
 
-        public Task AddQuestionAsync(int questionId,int surveyId)
+        public Task AddQuestionAsync(int questionId, int surveyId)
         {
             //Question is already asigned
             if (_surveyQuestionRepository.GetAll().Any(a => a.QuestionId == questionId)) return Task.CompletedTask;
 
             var question = _questionRepository.FirstOrDefault(a => a.Id == questionId);
 
-            if(question == null) return Task.CompletedTask;
+            if (question == null) return Task.CompletedTask;
 
-            return _surveyQuestionRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestion(surveyId,questionId));
-            
+            return _surveyQuestionRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestion(surveyId, questionId));
+
         }
 
-        public Task AddQuestionAsync(Question question,int surveyId)
+        public Task AddQuestionAsync(Question question, int surveyId)
         {
             //Question is already asigned
             if (_surveyQuestionRepository.GetAll().Any(a => a.QuestionId == question.Id)) return Task.CompletedTask;
@@ -97,7 +97,7 @@ namespace Survey.Core.Managers.Surveys
             return _surveyQuestionRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestion(surveyId, question.Id));
         }
 
-        public void AddQuestion(int questionId,int surveyId)
+        public void AddQuestion(int questionId, int surveyId)
         {
             //Question is already asigned
             if (_surveyQuestionRepository.GetAll().Any(a => a.QuestionId == questionId)) return;
@@ -109,7 +109,7 @@ namespace Survey.Core.Managers.Surveys
             _surveyQuestionRepository.InsertOrUpdateAndGetId(new SurveyQuestion(surveyId, questionId));
         }
 
-        public void AddQuestion(Question question,int surveyId)
+        public void AddQuestion(Question question, int surveyId)
         {
             //Question is already asigned
             if (_surveyQuestionRepository.GetAll().Any(a => a.QuestionId == question.Id)) return;
@@ -119,14 +119,14 @@ namespace Survey.Core.Managers.Surveys
             _surveyQuestionRepository.InsertOrUpdateAndGetId(new SurveyQuestion(surveyId, question.Id));
         }
 
-        public Task RemoveQuestionAsync(int id,int surveyId)
+        public Task RemoveQuestionAsync(int id, int surveyId)
         {
             var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == id && a.SurveyId == surveyId);
-            if(questionAssignment == null) return Task.CompletedTask;
+            if (questionAssignment == null) return Task.CompletedTask;
             return _surveyQuestionRepository.DeleteAsync(questionAssignment);
         }
 
-        public Task RemoveQuestionAsync(Question question,Entities.Survey survey)
+        public Task RemoveQuestionAsync(Question question, Entities.Survey survey)
         {
             var questionAssignment = _surveyQuestionRepository.FirstOrDefault(a => a.QuestionId == question.Id && a.SurveyId == survey.Id);
             if (questionAssignment == null) return Task.CompletedTask;
@@ -154,6 +154,13 @@ namespace Survey.Core.Managers.Surveys
             return survey;
         }
 
+        public async Task<Entities.Survey> GetSurveyFromUrlAsync(string url)
+        {
+            var survey = await _surveyRepository.FirstOrDefaultAsync(a => a.SurveyUrl == url);
+
+            return survey;
+        }
+
         public List<Question> GetQuestions(int surveyId)
         {
             var questionAssignment = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
@@ -164,8 +171,56 @@ namespace Survey.Core.Managers.Surveys
                 question.Order = surveyQuestion.Order;
                 questions.Add(question);
             }
-            return questions.OrderBy(a=>a.Order).ToList();
+            return questions.OrderBy(a => a.Order).ToList();
         }
+        public async Task<List<Question>> GetQuestionsAsync(int surveyId)
+        {
+            var questionAssignment = await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId);
+            List<Question> questions = new EditableList<Question>();
+            foreach (var surveyQuestion in questionAssignment)
+            {
+                var question = await _questionRepository.GetAsync(surveyQuestion.QuestionId);
+                question.Order = surveyQuestion.Order;
+                questions.Add(question);
+            }
+            return questions.OrderBy(a => a.Order).ToList();
+        }
+        public async Task<IDictionary<QuestionWithOffered, Answer>> GetQuestionsWithAnswersAsync(long? abpSessionUserId, int surveyId)
+        {
+            var result = new Dictionary<QuestionWithOffered, Answer>();
+
+            List<QuestionWithOffered> questionWithOffereds = new EditableList<QuestionWithOffered>();
+            var questionAssignment = await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId);
+
+            foreach (var surveyQuestion in questionAssignment)
+            {
+                var question = await _questionRepository.GetAsync(surveyQuestion.QuestionId);
+
+                var questionWithOffered = new QuestionWithOffered()
+                {
+                    Question = question,
+                    OfferedAnswers = GetOfferedAnswers(question.Id, surveyId).ToList()
+                };
+                questionWithOffereds.Add(questionWithOffered);
+            }
+
+
+            foreach (var question in questionWithOffereds)
+            {
+                //Answer from the user 
+                var answer =
+                    _answerRepository.GetAllIncluding(a => a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
+                                                                                                  a.CreatorUserId == abpSessionUserId) ??
+                    new Answer()
+                    {
+                        SelectedAnswers = new List<SelectedAnswer>()
+                    };
+                result.Add(question, answer);
+            }
+
+            return result;
+        }
+
         public IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId)
         {
             var result = new Dictionary<QuestionWithOffered, Answer>();
@@ -180,7 +235,7 @@ namespace Survey.Core.Managers.Surveys
                 var questionWithOffered = new QuestionWithOffered()
                 {
                     Question = question,
-                    OfferedAnswers = GetOfferedAnswers(question.Id,surveyId).ToList()
+                    OfferedAnswers = GetOfferedAnswers(question.Id, surveyId).ToList()
                 };
                 questionWithOffereds.Add(questionWithOffered);
             }
@@ -191,15 +246,15 @@ namespace Survey.Core.Managers.Surveys
                 var allAnswers = _answerRepository.GetAllList();
                 //Answer from the user 
                 var answer =
-                    _answerRepository.GetAllIncluding(a=>a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
-                                                          a.CreatorUserId == abpSessionUserId);
+                    _answerRepository.GetAllIncluding(a => a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
+                                                            a.CreatorUserId == abpSessionUserId);
 
-                if(answer == null) answer = new Answer()
+                if (answer == null) answer = new Answer()
                 {
                     SelectedAnswers = new List<SelectedAnswer>()
                 };
 
-                result.Add(question,answer);
+                result.Add(question, answer);
             }
 
             return result;

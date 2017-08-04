@@ -103,5 +103,8 @@ namespace Survey.Core.Managers.Surveys
         List<Question> GetQuestions(int surveyId);
 
 
+        Task<IDictionary<QuestionWithOffered, Answer>> GetQuestionsWithAnswersAsync(long? abpSessionUserId, int surveyId);
+        Task<List<Question>> GetQuestionsAsync(int surveyId);
+        Task<Entities.Survey> GetSurveyFromUrlAsync(string url);
     }
 }
