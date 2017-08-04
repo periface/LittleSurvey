@@ -52,3 +52,55 @@ DEBUG 2017-08-04 12:28:43,896 [24   ] Abp.Logging.LogHelper                    -
 DEBUG 2017-08-04 12:28:43,897 [24   ] Abp.Logging.LogHelper                    - Dynamic web api controller is created for type 'LittleSurvey.MultiTenancy.ITenantAppService' with service name 'app/tenant'.
 DEBUG 2017-08-04 12:28:43,897 [24   ] Abp.Logging.LogHelper                    - Dynamic web api controller is created for type 'Survey.Application.SurveyService.ISurveyAppService' with service name 'survey/survey'.
 DEBUG 2017-08-04 12:28:45,518 [31   ] Abp.Web.SignalR.Hubs.AbpCommonHub        - A client is connected (on reconnected event): {"ConnectionId":"af2b0d06-b1af-40d7-a38a-b5a4441113bc","IpAddress":"::1","TenantId":1,"UserId":null,"ConnectTime":"2017-08-04T12:28:45.4825405-05:00","Properties":{}}
+DEBUG 2017-08-04 12:28:53,556 [29   ] Abp.Modules.AbpModuleManager             - Shutting down has been started
+DEBUG 2017-08-04 12:28:53,557 [29   ] Abp.BackgroundJobs.BackgroundJobManager  - Stop background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2017-08-04 12:28:53,557 [29   ] Abp.BackgroundJobs.BackgroundJobManager  - WaitToStop background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2017-08-04 12:28:53,557 [29   ] Abp.Modules.AbpModuleManager             - Shutting down completed.
+DEBUG 2017-08-04 12:28:56,187 [21   ] Abp.Modules.AbpModuleManager             - Loading Abp modules...
+DEBUG 2017-08-04 12:28:56,620 [21   ] Abp.Modules.AbpModuleManager             - Found 19 ABP modules in total.
+DEBUG 2017-08-04 12:28:56,626 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: LittleSurvey.Web.LittleSurveyWebModule, LittleSurvey.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,628 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: LittleSurvey.LittleSurveyDataModule, LittleSurvey.EntityFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,629 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.EntityFramework.AbpZeroEntityFrameworkModule, Abp.Zero.EntityFramework, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,629 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCoreModule, Abp.Zero, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,629 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Zero.AbpZeroCommonModule, Abp.Zero.Common, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,629 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AbpKernelModule, Abp, Version=2.2.2.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,629 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkModule, Abp.EntityFramework, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.EntityFramework.AbpEntityFrameworkCommonModule, Abp.EntityFramework.Common, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: LittleSurvey.LittleSurveyCoreModule, LittleSurvey.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: LittleSurvey.LittleSurveyApplicationModule, LittleSurvey.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.AutoMapper.AbpAutoMapperModule, Abp.AutoMapper, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: LittleSurvey.Api.LittleSurveyWebApiModule, LittleSurvey.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,630 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.WebApi.AbpWebApiModule, Abp.Web.Api, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebModule, Abp.Web, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.AbpWebCommonModule, Abp.Web.Common, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Survey.Application.SurveyApplicationModule, Survey.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Survey.Core.SurveyCoreModule, Survey.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.SignalR.AbpWebSignalRModule, Abp.Web.SignalR, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,631 [21   ] Abp.Modules.AbpModuleManager             - Loaded module: Abp.Web.Mvc.AbpWebMvcModule, Abp.Web.Mvc, Version=2.2.1.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:56,634 [21   ] Abp.Modules.AbpModuleManager             - 19 modules loaded.
+DEBUG 2017-08-04 12:28:57,259 [21   ] o.Configuration.LanguageManagementConfig - Converted Abp (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2017-08-04 12:28:57,260 [21   ] o.Configuration.LanguageManagementConfig - Converted AbpZero (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2017-08-04 12:28:57,260 [21   ] o.Configuration.LanguageManagementConfig - Converted LittleSurvey (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2017-08-04 12:28:57,260 [21   ] o.Configuration.LanguageManagementConfig - Converted AbpWeb (Abp.Localization.Dictionaries.DictionaryBasedLocalizationSource) to MultiTenantLocalizationSource
+DEBUG 2017-08-04 12:28:57,606 [21   ] EntityFramework.AbpEntityFrameworkModule - Registering DbContext: LittleSurvey.EntityFramework.LittleSurveyDbContext, LittleSurvey.EntityFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+DEBUG 2017-08-04 12:28:58,090 [21   ] Abp.Localization.LocalizationManager     - Initializing 4 localization sources.
+DEBUG 2017-08-04 12:28:58,095 [21   ] Abp.Localization.LocalizationManager     - Initialized localization source: Abp
+DEBUG 2017-08-04 12:28:58,099 [21   ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpZero
+DEBUG 2017-08-04 12:28:58,101 [21   ] Abp.Localization.LocalizationManager     - Initialized localization source: LittleSurvey
+DEBUG 2017-08-04 12:28:58,101 [21   ] Abp.Localization.LocalizationManager     - Initialized localization source: AbpWeb
+DEBUG 2017-08-04 12:28:58,142 [21   ] Abp.BackgroundJobs.BackgroundJobManager  - Start background worker: Abp.BackgroundJobs.BackgroundJobManager
+DEBUG 2017-08-04 12:28:58,184 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Found 14 classes define auto mapping attributes
+DEBUG 2017-08-04 12:28:58,184 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.Sessions.Dto.TenantLoginInfoDto
+DEBUG 2017-08-04 12:28:58,187 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.Sessions.Dto.UserLoginInfoDto
+DEBUG 2017-08-04 12:28:58,187 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.Users.Dto.CreateUserInput
+DEBUG 2017-08-04 12:28:58,187 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.Users.Dto.UserListDto
+DEBUG 2017-08-04 12:28:58,187 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.MultiTenancy.Dto.CreateTenantInput
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.MultiTenancy.Dto.TenantListDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.QuestionDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.AnswerInputDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.OfferedAnswerDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.QuestionInputDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.SurveyForUserDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.SurveyInputDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - Survey.Application.SurveyService.Dto.SurveyDto
+DEBUG 2017-08-04 12:28:58,188 [21   ] Abp.AutoMapper.AbpAutoMapperModule       - LittleSurvey.Web.Models.Account.TenantSelectionViewModel+TenantInfo
