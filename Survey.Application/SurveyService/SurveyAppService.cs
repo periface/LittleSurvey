@@ -121,6 +121,13 @@ namespace Survey.Application.SurveyService
             await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText,AbpSession.UserId);
         }
 
+        public async Task BulkAnswer(List<AnswerInputDto> answers)
+        {
+            foreach (AnswerInputDto answer in answers)
+            {
+                await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText, AbpSession.UserId);
+            }
+        }
         public int GetAllAnswers()
         {
            return _answerRepository.Count();
