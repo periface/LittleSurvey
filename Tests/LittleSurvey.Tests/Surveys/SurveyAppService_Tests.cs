@@ -147,6 +147,21 @@ namespace LittleSurvey.Tests.Surveys
                 questionAssignment.ShouldBeNull();
             });
         }
+
+        [Fact]
+        public async Task PrevNextSearch_Test()
+        {
+            var guid = Guid.NewGuid().ToString("N").Substring(0, 6);
+            await CreateCompleteSurvey(guid,new []{ "Q1", "Q2", "Q3", "Q4" });
+            var survey = await _surveyAppService.GetSurvey(guid);
+            var firstOrDefault = survey.Answers.FirstOrDefault(a=>a.QuestionText == "Q3");
+            if (firstOrDefault != null)
+            {
+                var check = _surveyAppService.GetQuestion(survey.Id, firstOrDefault.Id);
+                check.NextQuestion.ShouldBe(4);
+                check.PrevQuestion.ShouldBe(2);
+            }
+        }
         private async Task<int> CreateFakeQuestion(string txt, bool b)
         {
             return await _surveyAppService.CreateQuestion(new QuestionInputDto()
@@ -177,7 +192,7 @@ namespace LittleSurvey.Tests.Surveys
         {
             foreach (var surveyAnswer in survey.Answers)
             {
-                
+
                 if (surveyAnswer.AllowMultipleAnswers)
                 {
                     IEnumerable<int> randoms = GetRandomAnswers(surveyAnswer.OfferedAnswers);

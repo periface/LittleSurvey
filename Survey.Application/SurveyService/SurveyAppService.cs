@@ -120,6 +120,43 @@ namespace Survey.Application.SurveyService
             await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText,AbpSession.UserId);
         }
 
+        public QuestionDto GetQuestion(int surveyId, int questionId)
+        {
+            var questions = _surveyManager.GetQuestions(surveyId);
+
+            var question = questions.FirstOrDefault(a => a.Id == questionId);
+
+            var mapped = question.MapTo<QuestionDto>();
+
+            var index = questions.IndexOf(question);
+
+
+            var prevQuestion = TryToGetElementAt(questions,index - 1);
+            var nextQuestion = TryToGetElementAt(questions, index + 1);
+
+            if (prevQuestion != null)
+            {
+                mapped.PrevQuestion = prevQuestion.Id;
+            }
+            if (nextQuestion != null)
+            {
+                mapped.NextQuestion = nextQuestion.Id;
+            }
+            return mapped;
+        }
+
+        private Question TryToGetElementAt(List<Question> questions,int index)
+        {
+            try
+            {
+                var prevQuestion = questions.ElementAt(index);
+                return prevQuestion;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         public async Task BulkAnswer(List<AnswerInputDto> answers)
         {
             foreach (AnswerInputDto answer in answers)

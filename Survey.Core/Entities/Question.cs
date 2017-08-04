@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
 
 namespace Survey.Core.Entities
@@ -20,5 +21,8 @@ namespace Survey.Core.Entities
         public int QuestionType { get; set; }
         //Only for ui selection
         public bool AllowMultipleAnswers { get; set; }
+
+        [NotMapped]
+        public int Order { get; set; }
     }
 }

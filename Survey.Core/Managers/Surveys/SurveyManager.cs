@@ -161,10 +161,10 @@ namespace Survey.Core.Managers.Surveys
             foreach (var surveyQuestion in questionAssignment)
             {
                 var question = _questionRepository.Get(surveyQuestion.QuestionId);
-
+                question.Order = surveyQuestion.Order;
                 questions.Add(question);
             }
-            return questions;
+            return questions.OrderBy(a=>a.Order).ToList();
         }
         public IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId)
         {

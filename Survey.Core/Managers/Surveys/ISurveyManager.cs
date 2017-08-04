@@ -101,5 +101,7 @@ namespace Survey.Core.Managers.Surveys
         Entities.Survey GetSurveyFromUrl(string url);
         IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId);
         List<Question> GetQuestions(int surveyId);
+
+
     }
 }

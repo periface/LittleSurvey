@@ -1,4 +1,5 @@
-﻿using Abp.Application.Services;
+﻿using System.Collections.Generic;
+using Abp.Application.Services;
 using System.Threading.Tasks;
 using Survey.Application.SurveyService.Dto;
 
@@ -16,8 +17,11 @@ namespace Survey.Application.SurveyService
         Task SetOfferedAnswer(int surveyId, int questionId, int idAnswer);
         Task AnswerQuestion(AnswerInputDto answer);
 
-        int GetAllAnswers();
+        QuestionDto GetQuestion(int surveyId, int questionId);
 
         Task BulkAnswer(List<AnswerInputDto> answers);
+
+
+
     }
 }

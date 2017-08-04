@@ -30,5 +30,7 @@ namespace Survey.Application.SurveyService.Dto
                 return true;
             }
         }
+        public int NextQuestion { get; set; }
+        public int PrevQuestion { get; set; }
     }
 }
