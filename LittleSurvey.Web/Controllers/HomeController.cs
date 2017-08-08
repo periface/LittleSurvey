@@ -22,8 +22,14 @@ namespace LittleSurvey.Web.Controllers
 
         public async Task<ActionResult> Survey(string surveyurl)
         {
-            var survey = await _surveyAppService.GetSurvey(surveyurl);
+            var survey = await _surveyAppService.GetSurveyFirstQuestion(surveyurl);
             return View(survey);
+        }
+
+        public ActionResult GetNextQuestion(int questionId, int surveyId)
+        {
+            var question = _surveyAppService.GetQuestion(surveyId,questionId);
+            return View(question);
         }
     }
 }

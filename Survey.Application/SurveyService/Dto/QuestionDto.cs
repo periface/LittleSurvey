@@ -32,5 +32,6 @@ namespace Survey.Application.SurveyService.Dto
         }
         public int NextQuestion { get; set; }
         public int PrevQuestion { get; set; }
+        public int SurveyId { get; set; }
     }
 }

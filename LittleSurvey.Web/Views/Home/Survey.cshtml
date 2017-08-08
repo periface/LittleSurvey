@@ -1,4 +1,4 @@
-﻿@model Survey.Application.SurveyService.Dto.SurveyForUserDto
+﻿@model Survey.Application.SurveyService.Dto.SurveyWithOnlyFirstQuestionForUserDto
 
 @{
     ViewBag.Title = "title";
@@ -7,174 +7,81 @@
 <h2>@Model.Description</h2>
 <div class="container">
     <div class="row">
-        <section>
-            <div class="wizard">
-                <div class="wizard-inner">
-                    <div class="connecting-line"></div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        @{
-                            var isFirst = true;
-                        }
-                        @foreach (var elm in Model.Answers)
-                        {
-                            if (isFirst)
-                            {
-                                <li role="presentation" class="active">
-                                    <a href="#step_@elm.Id" data-toggle="tab" aria-controls="step1" role="tab" title="Pregunta @Model.Answers.IndexOf(elm)">
-                                        <span class="round-tab">
-                                            <i class="glyphicon glyphicon-folder-open"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                                isFirst = false;
-                            }
-                            else
-                            {
-                                <li role="presentation" class="">
-                                    <a href="#step_@elm.Id" data-toggle="tab" aria-controls="step1" role="tab" title="Step 1">
-                                        <span class="round-tab">
-                                            <i class="glyphicon glyphicon-folder-open"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            }
-                        }
+        <div class="col-md-12" id="survey_section">
+            <form>
+                <div class="tab-pane active" role="tabpanel" id="step_@Model.Answer.Id">
+                    <h3>@Model.Answer.QuestionText</h3>
 
-                        <li role="presentation" class="disabled">
-                            <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Complete">
-                                <span class="round-tab">
-                                    <i class="glyphicon glyphicon-ok"></i>
-                                </span>
-                            </a>
-                        </li>
+                    @Html.Hidden("QuestionId", Model.Answer.Id)
+
+                    @if (Model.Answer.QuestionType == 0)
+                    {
+
+                        foreach (var r in Model.Answer.OfferedAnswers)
+                        {
+                            <div class="radio">
+                                <label>
+                                    @if (Model.Answer.OfferedAnswerIds.Any(a => a == r.Id))
+                                    {
+                                        <input required="" class="js-value" type="radio" checked="checked" name="Question" value="@r.Id" />@r.AnswerText
+                                    }
+                                    else
+                                    {
+
+                                        <input type="radio" class="js-value" required="" name="Question" value="@r.Id" />
+                                        @r.AnswerText
+                                    }
+                                </label>
+                            </div>
+                        }
+                    }
+
+                    <ul class="list-inline pull-right">
+                        @if (Model.Answer.PrevQuestion > 0)
+                        {
+                            <li><button type="button" class="btn btn-primary prev-step" data-survey="@Model.Id" data-prev="@Model.Answer.PrevQuestion">Anterior</button></li>
+
+                        }
+                        @if (Model.Answer.NextQuestion > 0)
+                        {
+                            <li><button type="button" class="btn btn-primary next-step" data-survey="@Model.Id" data-next="@Model.Answer.NextQuestion">Guardar y continuar</button></li>
+
+                        }
+                        else
+                        {
+                            <li><button type="button" class="btn btn-primary next-step" data-survey="@Model.Id" data-next="@Model.Answer.NextQuestion">Guardar y Finalizar</button></li>
+                        }
                     </ul>
                 </div>
+            </form>
 
-                <form role="form">
-                    <div class="tab-content">
-                        @{
-                            isFirst = true;
-                        }
-                        @foreach (var elm in Model.Answers)
-                        {
-                            if (isFirst)
-                            {
-                                <div class="tab-pane active" role="tabpanel" id="step_@elm.Id">
-                                    <h3>@elm.QuestionText</h3>
-
-                                    @if (elm.QuestionType == 0)
-                                    {
-
-                                        foreach (var r in elm.OfferedAnswers)
-                                        {
-                                            <div class="radio">
-                                                <label>
-                                                    @if (elm.OfferedAnswerIds.Any(a => a == r.Id))
-                                                    {
-                                                        <input type="radio" checked="checked" name="Question_@elm.Id" value="@r.Id" />@r.AnswerText
-                                                    }
-                                                    else
-                                                    {
-
-                                                        <input type="radio" name="Question_@elm.Id" value="@r.Id" /> @r.AnswerText
-                                                    }
-                                                </label>
-                                            </div>
-                                        }
-                                    }
-
-                                    <ul class="list-inline pull-right">
-                                        <li><button type="button" class="btn btn-primary next-step">Guardar y continuar</button></li>
-                                    </ul>
-                                </div>
-                                <p></p>
-                                isFirst = false;
-                            }
-                            else
-                            {
-                                <div class="tab-pane" role="tabpanel" id="step_@elm.Id">
-                                    <h3>@elm.QuestionText</h3>
-
-                                    @if (elm.QuestionType == 0)
-                                    {
-
-                                        foreach (var r in elm.OfferedAnswers)
-                                        {
-                                            <div class="radio">
-                                                <label>
-                                                    @if (elm.OfferedAnswerIds.Any(a => a == r.Id))
-                                                    {
-                                                    <input type="radio" checked="checked" name="Question_@elm.Id" value="@r.Id" />@r.AnswerText
-                                                    }
-                                                    else
-                                                    {
-
-                                                    <input type="radio" name="Question_@elm.Id" value="@r.Id" /> @r.AnswerText
-                                                    }
-                                                </label>
-                                            </div>
-                                        }
-                                    }
-
-                                    <ul class="list-inline pull-right">
-                                        <li><button type="button" class="btn btn-default prev-step">Anterior</button></li>
-                                        <li><button type="button" class="btn btn-primary next-step">Guardar y continuar</button></li>
-                                    </ul>
-                                </div>
-                                <p></p>
-                            }
-                        }
-
-
-                        <div class="tab-pane" role="tabpanel" id="complete">
-                            <h3>Complete</h3>
-                            <p>You have successfully completed all steps.</p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                </form>
-            </div>
-        </section>
+        </div>
     </div>
 </div>
 
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            //Initialize tooltips
-            $('.nav-tabs > li a[title]').tooltip();
+        $("body").on("click", ".next-step", function () {
+            var surveyId = $(this).data("survey");
+            var nextId = $(this).data("next");
 
-            //Wizard
-            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            var service = abp.services.app.survey;
 
-                var $target = $(e.target);
-
-                if ($target.parent().hasClass('disabled')) {
-                    return false;
+            service.answerQuestion({
+                SurveyId: surveyId,
+                QuestionId: $("#QuestionId").val(),
+                OfferedAnswerIds: [$("input:radio[name=Question]:checked").val()]
+            }).done(function () {
+                if (nextId == 0) {
+                    window.location.reload();
+                } else {
+                    $("#survey_section").load("/Home/GetNextQuestion?questionId=" + nextId + "&surveyId=" + surveyId);
                 }
+                
             });
 
-            $(".next-step").click(function (e) {
 
-                var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-
-            });
-            $(".prev-step").click(function (e) {
-
-                var $active = $('.wizard .nav-tabs li.active');
-                prevTab($active);
-
-            });
         });
-
-        function nextTab(elem) {
-            $(elem).next().find('a[data-toggle="tab"]').click();
-        }
-        function prevTab(elem) {
-            $(elem).prev().find('a[data-toggle="tab"]').click();
-        }
     </script>
 }

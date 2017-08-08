@@ -1,0 +1,51 @@
+﻿@model Survey.Application.SurveyService.Dto.QuestionDto
+
+@{
+    Layout = null;
+}
+
+<form>
+    <div class="tab-pane active" role="tabpanel" id="step_@Model.Id">
+        <h3>@Model.QuestionText</h3>
+        @Html.Hidden("QuestionId", Model.Id)
+        @if (Model.QuestionType == 0)
+        {
+
+            foreach (var r in Model.OfferedAnswers)
+            {
+                <div class="radio">
+                    <label>
+                        @if (Model.OfferedAnswerIds.Any(a => a == r.Id))
+                        {
+                            <input required="" type="radio" checked="checked" name="Question" value="@r.Id"/>@r.AnswerText
+                        }
+                        else
+                        {
+
+                            <input type="radio" required="" name="Question" value="@r.Id"/>
+                            @r.AnswerText
+                        }
+                    </label>
+                </div>
+            }
+        }
+
+        <ul class="list-inline pull-right">
+            @if (Model.PrevQuestion > 0)
+            {
+                <li><button type="button" class="btn btn-primary prev-step" data-survey="@Model.SurveyId" data-next="@Model.PrevQuestion">Anterior</button></li>
+
+            }
+            @if (Model.NextQuestion > 0)
+            {
+                <li><button type="submit" class="btn btn-primary next-step" data-next="@Model.NextQuestion">Guardar y continuar</button></li>
+
+            }
+            else
+            {
+                <li><button type="button" class="btn btn-primary next-step" data-survey="@Model.Id" data-next="@Model.NextQuestion">Guardar y Finalizar</button></li>
+            }
+        </ul>
+    </div>
+</form>
+            

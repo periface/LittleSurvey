@@ -19,6 +19,8 @@ namespace Survey.Application.SurveyService
         [HttpGet]
         Task<SurveyForUserDto> GetSurvey(string url);
         [HttpGet]
+        Task<SurveyWithOnlyFirstQuestionForUserDto> GetSurveyFirstQuestion(string url);
+        [HttpGet]
         Task<List<SurveyDto>> GetSurveys();
         [HttpPost]
         Task<int> AddPredefinedAnswer(string txt);

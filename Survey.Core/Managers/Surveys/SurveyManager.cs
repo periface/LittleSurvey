@@ -190,7 +190,7 @@ namespace Survey.Core.Managers.Surveys
             var result = new Dictionary<QuestionWithOffered, Answer>();
 
             List<QuestionWithOffered> questionWithOffereds = new EditableList<QuestionWithOffered>();
-            var questionAssignment = await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId);
+            var questionAssignment = (await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId)).OrderBy(a=>a.Order);
 
             foreach (var surveyQuestion in questionAssignment)
             {
@@ -243,7 +243,6 @@ namespace Survey.Core.Managers.Surveys
 
             foreach (var question in questionWithOffereds)
             {
-                var allAnswers = _answerRepository.GetAllList();
                 //Answer from the user 
                 var answer =
                     _answerRepository.GetAllIncluding(a => a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&

@@ -19,7 +19,7 @@ namespace LittleSurvey.Api
                 .ForAll<IApplicationService>(typeof(LittleSurveyApplicationModule).Assembly, "app")
                 .Build();
             Configuration.Modules.AbpWebApi().DynamicApiControllerBuilder
-                .ForAll<IApplicationService>(typeof(SurveyApplicationModule).Assembly, "survey")
+                .ForAll<IApplicationService>(typeof(SurveyApplicationModule).Assembly, "app")
                 .Build();
             Configuration.Modules.AbpWebApi().HttpConfiguration.Filters.Add(new HostAuthenticationFilter("Bearer"));
         }

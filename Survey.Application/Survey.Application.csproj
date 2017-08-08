@@ -107,6 +107,7 @@
     <Compile Include="SurveyService\Dto\SurveyForUserDto.cs" />
     <Compile Include="SurveyService\Dto\SurveyInputDto.cs" />
     <Compile Include="SurveyService\Dto\SurveyDto.cs" />
+    <Compile Include="SurveyService\Dto\SurveyWithOnlyFirstQuestionForUserDto.cs" />
     <Compile Include="SurveyService\ISurveyAppService.cs" />
     <Compile Include="SurveyService\SurveyAppService.cs" />
   </ItemGroup>

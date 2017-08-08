@@ -89,18 +89,52 @@ namespace Survey.Core.Managers.Questions
 
         public async Task Answer(int surveyId, int questionId, int[] offeredAnswersId, string otherText, long? abpSessionUserId)
         {
-            var answer = new Answer(surveyId, questionId, otherText) { CreatorUserId = abpSessionUserId };
-            await _answerRepository.InsertOrUpdateAndGetIdAsync(answer);
-            if (offeredAnswersId.Any())
+
+            var found = _answerRepository.FirstOrDefault(a => a.SurveyId == surveyId && a.QuestionId == questionId &&
+                                                  a.CreatorUserId == abpSessionUserId);
+
+            if (found != null)
             {
-                foreach (var i in offeredAnswersId)
+                found.OtherText = otherText;
+                await _answerRepository.InsertOrUpdateAndGetIdAsync(found);
+                if (offeredAnswersId.Any())
                 {
-                    await _selectedAnswerRepository.InsertOrUpdateAndGetIdAsync(new SelectedAnswer()
+                    ClearAnswers(found.Id);
+                    foreach (var i in offeredAnswersId)
                     {
-                        AnswerId = answer.Id,
-                        SelectedAnswerId = i
-                    });
+                        await _selectedAnswerRepository.InsertOrUpdateAndGetIdAsync(new SelectedAnswer()
+                        {
+                            AnswerId = found.Id,
+                            SelectedAnswerId = i
+                        });
+                    }
                 }
+            }
+            else
+            {
+                var answer = new Answer(surveyId, questionId, otherText) { CreatorUserId = abpSessionUserId };
+                await _answerRepository.InsertOrUpdateAndGetIdAsync(answer);
+                if (offeredAnswersId.Any())
+                {
+                    foreach (var i in offeredAnswersId)
+                    {
+                        await _selectedAnswerRepository.InsertOrUpdateAndGetIdAsync(new SelectedAnswer()
+                        {
+                            AnswerId = answer.Id,
+                            SelectedAnswerId = i
+                        });
+                    }
+                }
+            }
+            
+        }
+
+        private void ClearAnswers(int foundId)
+        {
+            var all = _selectedAnswerRepository.GetAllList(a => a.AnswerId == foundId);
+            foreach (var selectedAnswer in all)
+            {
+                _selectedAnswerRepository.Delete(selectedAnswer);
             }
         }
 
