@@ -259,3 +259,11 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/LittleSurvey.Application/NuGet.targets
+/LittleSurvey.Application/NuGet.exe
+/LittleSurvey.Application/NuGet.Config
+/LittleSurvey.Application/LittleSurvey.Application.nuspec
+/Survey.Application/Survey.Application.nuspec
+/Survey.Application/NuGet.targets
+/Survey.Application/NuGet.exe
+/Survey.Application/NuGet.Config
