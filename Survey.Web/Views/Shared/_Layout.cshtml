@@ -1,0 +1,41 @@
+﻿@using System.Threading
+@using System.Web.Optimization
+@using Abp.Timing
+@using Abp.Web.Mvc.Extensions
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="~/favicon.ico">
+    <title>LittleSurvey</title>
+
+</head>
+<body>
+<div class="container">
+    @RenderBody()
+</div>
+
+@Scripts.Render("~/Bundles/vendor/js/bottom")
+@Scripts.Render("~/Bundles/js")
+
+<script>
+    //Localizing momentjs
+    moment.locale('@Thread.CurrentThread.CurrentUICulture.Name');
+</script>
+
+<!-- Dynamic scripts of ABP system (They are created on runtime and can not be bundled) -->
+<script src="~/api/AbpServiceProxies/GetAll?v=@(Clock.Now.Ticks)"></script>
+<script src="~/AbpScripts/GetScripts?v=@(Clock.Now.Ticks)" type="text/javascript"></script>
+
+<!-- SignalR scripts -->
+<script src="~/signalr/hubs"></script>
+@Html.IncludeScript("~/Abp/Framework/scripts/libs/abp.signalr.js")
+
+<!-- View specific scripts -->
+@RenderSection("scripts", required: false)
+</body>
+</html>

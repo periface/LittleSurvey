@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Survey.Application.SurveyService.Dto.SurveyDto>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@foreach (var sr in Model)
+{
+    <li class="list-group-item">
+        <a href="@Url.Action("Survey", new {sr.SurveyUrl})">@sr.Description</a>
+                    
+    </li>
+}

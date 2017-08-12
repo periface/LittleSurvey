@@ -6,10 +6,12 @@ using Abp.Hangfire;
 using Abp.Hangfire.Configuration;
 using Abp.Zero.Configuration;
 using Abp.Modules;
+using Abp.Resources.Embedded;
 using Abp.Web.Mvc;
 using Abp.Web.SignalR;
 using LittleSurvey.Api;
 using Hangfire;
+using Survey.Web;
 
 namespace LittleSurvey.Web
 {
@@ -17,7 +19,7 @@ namespace LittleSurvey.Web
         typeof(LittleSurveyDataModule),
         typeof(LittleSurveyApplicationModule),
         typeof(LittleSurveyWebApiModule),
-        typeof(AbpWebSignalRModule),
+        typeof(AbpWebSignalRModule),typeof(SurveyWebModule),
         //typeof(AbpHangfireModule), - ENABLE TO USE HANGFIRE INSTEAD OF DEFAULT JOB MANAGER
         typeof(AbpWebMvcModule))]
     public class LittleSurveyWebModule : AbpModule
@@ -35,6 +37,7 @@ namespace LittleSurvey.Web
             //{
             //    configuration.GlobalConfiguration.UseSqlServerStorage("Default");
             //});
+            
         }
 
         public override void Initialize()

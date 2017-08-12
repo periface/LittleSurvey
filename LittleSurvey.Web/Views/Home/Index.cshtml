@@ -6,13 +6,7 @@
 <div class="row">
     <div class="col-md-12">
         <ul class="list-group">
-            @foreach (var sr in Model)
-            {
-                <li class="list-group-item">
-                    <a href="@Url.Action("Survey", new {sr.SurveyUrl})">@sr.Description</a>
-                    
-                </li>
-            }
+            
         </ul>
         
     </div>
