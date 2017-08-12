@@ -162,10 +162,12 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\SurveyAdminController.cs" />
     <Compile Include="Controllers\SurveyController.cs" />
     <Compile Include="Controllers\SurveyControllerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SurveyWebModule.cs" />
+    <Compile Include="Views\SurveyWebViewPageBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -173,7 +175,9 @@
     <EmbeddedResource Include="Views\Survey\Index.cshtml" />
     <EmbeddedResource Include="Views\Survey\GetNextQuestion.cshtml" />
     <EmbeddedResource Include="Views\Survey\Survey.cshtml" />
-    <EmbeddedResource Include="Views\Shared\_Layout.cshtml" />
+    <EmbeddedResource Include="Views\Shared\_Layout_Survey.cshtml" />
+    <EmbeddedResource Include="Views\_ViewStart.cshtml" />
+    <EmbeddedResource Include="Views\SurveyAdmin\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

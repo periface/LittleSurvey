@@ -468,7 +468,7 @@
     </Compile>
     <Compile Include="Models\Layout\TopMenuViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\LittleSurveyWebViewPageBase.cs" />
+    <Compile Include="Views\SurveyWebViewPageBase.cs" />
     <Compile Include="Views\UrlChecker.cs" />
   </ItemGroup>
   <ItemGroup>
