@@ -28,8 +28,12 @@
                     </label>
                 </div>
             }
-        }
 
+        }
+        @if (!Model.OfferedAnswers.Any())
+        {
+            <input type="text" class="OtherText form-control" required="" name="Question" value="@Model.OtherText" />
+        }
         <ul class="list-inline pull-right">
             @if (Model.PrevQuestion > 0)
             {
@@ -43,7 +47,7 @@
             }
             else
             {
-                <li><button type="button" class="btn btn-primary next-step" data-survey="@Model.Id" data-next="@Model.NextQuestion">Guardar y Finalizar</button></li>
+                <li><button type="button" class="btn btn-primary next-step" data-survey="@Model.SurveyId" data-next="@Model.NextQuestion">Guardar y Finalizar</button></li>
             }
         </ul>
     </div>

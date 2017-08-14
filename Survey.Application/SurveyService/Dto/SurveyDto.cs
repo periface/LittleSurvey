@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 
 namespace Survey.Application.SurveyService.Dto
 {
     [AutoMap(typeof(Core.Entities.Survey))]
-    public class SurveyDto
+    public class SurveyDto : EntityDto
     {
         public string Description { get; set; }
         public DateTime StartDateTime { get; set; }

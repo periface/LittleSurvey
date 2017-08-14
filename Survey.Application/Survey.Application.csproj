@@ -100,10 +100,12 @@
   <ItemGroup>
     <Compile Include="SurveyApplicationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SurveyService\Dto\AssignQuestionInputDto.cs" />
     <Compile Include="SurveyService\Dto\QuestionDto.cs" />
     <Compile Include="SurveyService\Dto\AnswerInputDto.cs" />
     <Compile Include="SurveyService\Dto\OfferedAnswerDto.cs" />
     <Compile Include="SurveyService\Dto\QuestionInputDto.cs" />
+    <Compile Include="SurveyService\Dto\SetQuestionsDto.cs" />
     <Compile Include="SurveyService\Dto\SurveyForUserDto.cs" />
     <Compile Include="SurveyService\Dto\SurveyInputDto.cs" />
     <Compile Include="SurveyService\Dto\SurveyDto.cs" />

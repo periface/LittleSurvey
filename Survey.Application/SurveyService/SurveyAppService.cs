@@ -49,13 +49,23 @@ namespace Survey.Application.SurveyService
         {
             await _surveyManager.AddQuestionAsync(questionId, surveyId);
         }
+
+        public async Task AssignQuestionsToSurvey(List<AssignQuestionInputDto> input, int surveyId)
+        {
+            await _surveyManager.AddQuestionsAsync(surveyId, input.Select(a => a.QuestionId).ToList());
+        }
+
         public async Task RemoveQuestionFromSurvey(int surveyId, int questionId)
         {
             await _surveyManager.RemoveQuestionAsync(questionId, surveyId);
         }
-        public Task DeleteSurvey(int id)
+        public async Task DeleteSurvey(int id)
         {
-            throw new NotImplementedException();
+            var survey = await _surveyRepository.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (survey == null) return;
+
+            await _surveyManager.DeleteSurveyAsync(survey);
         }
 
         public async Task<SurveyWithOnlyFirstQuestionForUserDto> GetSurveyFirstQuestion(string url)
@@ -222,6 +232,7 @@ namespace Survey.Application.SurveyService
             if (response != null)
                 mapped.OfferedAnswerIds = response.SelectedAnswers.Select(a => a.SelectedAnswerId).ToArray();
 
+            if (response != null) mapped.OtherText = response.OtherText;
             return mapped;
         }
 
@@ -244,6 +255,27 @@ namespace Survey.Application.SurveyService
                 await _questionManager.Answer(answer.SurveyId, answer.QuestionId, answer.OfferedAnswerIds, answer.OtherText, AbpSession.UserId);
             }
         }
+
+        public List<QuestionDto> GetAvailableQuestions(int id)
+        {
+            List<Question> questions = _questionManager.GetQuestionsForSurveyAsync(id);
+
+            return questions.Select(a => a.MapTo<QuestionDto>()).ToList();
+        }
+
+        public async Task<SurveyDto> GetSurveyById(int id)
+        {
+            var survey = await _surveyRepository.FirstOrDefaultAsync(a => a.Id == id);
+            return survey.MapTo<SurveyDto>();
+        }
+
+        public List<QuestionDto> GetAssignedQuestions(int id)
+        {
+            List<Question> questions = _questionManager.GetQuestionsForSurveyInvertedAsync(id);
+
+            return questions.Select(a => a.MapTo<QuestionDto>()).ToList();
+        }
+
         public int GetAllAnswers()
         {
             return _answerRepository.Count();

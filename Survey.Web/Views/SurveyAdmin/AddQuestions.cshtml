@@ -1,0 +1,86 @@
+﻿@model Survey.Application.SurveyService.Dto.SetQuestionsDto
+@{
+    Layout = "~/Views/Shared/_Layout_Survey.cshtml";
+}
+<h2>@L("AddQuestions") @Model.Survey.Description</h2>
+<style>
+    .connectedSortable {
+        min-height: 300px;
+        background-color: whitesmoke;
+    }
+</style>
+@Html.Hidden("SurveyId",Model.Survey.Id)
+<div class="row">
+    <div class="col-md-6">
+        <h4>Disponibles</h4>
+        <div id="listOne" class="list-group connectedSortable">
+
+            @foreach (var elm in Model.AvailableQuestions)
+            {
+                <div class="list-group-item js-question"  data-id="@elm.Id">
+                    @elm.QuestionText
+                    <p>
+                        <a class="btn btn-primary btn-xs js-set-answ" data-id="@elm.Id">Ver respuestas</a>
+                    </p>
+                </div>
+            }
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Asignadas</h4>
+        <div id="listTwo" class="list-group connectedSortable">
+
+            @foreach (var elm in Model.AssignedQuestions)
+            {
+                <div class="list-group-item js-question" data-id="@elm.Id">
+                    @elm.QuestionText
+                    <p>
+                        <a class="btn btn-primary btn-xs js-see-answ" data-id="@elm.Id">Ver respuestas</a>
+                    </p>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <button class="btn btn-success js-save">Guardar</button>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            var service = abp.services.app.survey;
+            
+            $("#listOne, #listTwo").sortable({
+                connectWith: ".connectedSortable"
+            }).disableSelection();
+
+            $(".js-save").click(function () {
+                var elms = $("#listTwo").find(".js-question");
+                console.log(elms);
+                var arr = [];
+                for (var i = 0; i < elms.length; i++) {
+                    var $elm = $(elms[i]);
+                    var id = $elm.data("id");
+                    var sId = $elm.data("s");
+
+                    arr.push({
+                        surveyId: sId,
+                        questionId: id
+                    });
+                }
+                console.log(arr);
+                service.assignQuestionsToSurvey(arr, $("#SurveyId").val()).done(function() {
+                    abp.message.success("¡Cambios guardados con exito!");
+                });
+            });
+
+        });
+    </script>
+}

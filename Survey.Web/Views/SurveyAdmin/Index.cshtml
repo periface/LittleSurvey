@@ -1,6 +1,85 @@
-﻿
+﻿@model List<Survey.Application.SurveyService.Dto.SurveyDto>
 @{
     Layout = "~/Views/Shared/_Layout_Survey.cshtml";
 }
 
-<h2>Admin</h2>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Gestión de encuestas</h2>
+        <a class="btn btn-primary" href="@Url.Action("Index","QuestionAdmin")">Gestionar preguntas</a>
+        <a class="btn btn-primary" href="@Url.Action("Index","AnswersAdmin")">Gestionar respuestas</a>
+        <hr/>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#SurveyCreateModal">Crear encuesta</button>
+        
+        <div class="form-group">
+            <input type="search" class="form-control" placeholder="Buscar"/> 
+        </div>
+
+        <div class="list-group">
+            @if (!Model.Any())
+            {
+                <h3 class="text-center">No hay encuestas</h3>
+            }
+            @foreach (var surveyDto in Model)
+            {
+                <div class="list-group-item">
+                    <h3>@surveyDto.Description</h3>
+                    <p>Fecha de Inicio:<strong> @surveyDto.StartDateTime.ToShortDateString()</strong></p>
+                    <p>Fecha de Cierre:<strong> @surveyDto.EndDateTime.ToShortDateString()</strong></p>
+
+                    <p>
+                        <a href="@Url.Action("AddQuestions",new { id = surveyDto.Id})" class="btn btn-primary btn-xs">Asignar preguntas</a>
+                        <a class="btn btn-default btn-xs">Editar</a>
+                        <a class="btn btn-danger btn-xs js-delete" data-id="@surveyDto.Id">Eliminar</a>
+                    </p>
+                    <br/>
+                    <p>
+                        <button class="btn btn-default">Ver respuestas</button>
+                    </p>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+
+
+@section Scripts{
+    
+    <div class="modal fade" id="SurveyCreateModal" tabindex="-1" role="dialog" aria-labelledby="SurveyCreateModalLabel" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="surveyCreateForm" role="form" novalidate class="form-validation">
+                    <div class="modal-header">
+                        <h4 class="modal-title">
+                            <span>@L("CreateNewSurvey")</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="description"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" name="startDateTime" />
+                        </div>
+                        <div class="form-group">
+                            <input type="date" class="form-control" name="endDateTime" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@L("Cancel")</button>
+                        <button type="submit" class="btn btn-primary blue"><i class="fa fa-save"></i> <span>@L("Save")</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="~/Views/SurveyAdmin/Index.js"></script>
+    
+}

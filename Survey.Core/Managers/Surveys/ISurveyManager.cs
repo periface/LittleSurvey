@@ -97,14 +97,48 @@ namespace Survey.Core.Managers.Surveys
         /// <param name="survey"></param>
         /// <returns></returns>
         void RemoveQuestion(Question question,Entities.Survey survey);
-
+        /// <summary>
+        /// Gets the survey from its unique url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         Entities.Survey GetSurveyFromUrl(string url);
+        /// <summary>
+        /// Gets all the questions with their offered answers
+        /// <para>If the user had answered the question then it will come with it</para>
+        /// </summary>
+        /// <param name="abpSessionUserId"></param>
+        /// <param name="surveyId"></param>
+        /// <returns></returns>
         IDictionary<QuestionWithOffered, Answer> GetQuestionsWithAnswers(long? abpSessionUserId, int surveyId);
+        /// <summary>
+        /// Get all unassigned questions for the survey
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <returns></returns>
         List<Question> GetQuestions(int surveyId);
-
-
+        
+        /// <summary>
+        /// Gets all the questions with their offered answers
+        /// <para>If the user had answered the question then it will come with it</para>
+        /// </summary>
+        /// <param name="abpSessionUserId"></param>
+        /// <param name="surveyId"></param>
+        /// <returns></returns>
         Task<IDictionary<QuestionWithOffered, Answer>> GetQuestionsWithAnswersAsync(long? abpSessionUserId, int surveyId);
+        /// <summary>
+        /// Get all unassigned questions for the survey
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <returns></returns>
         Task<List<Question>> GetQuestionsAsync(int surveyId);
+        /// <summary>
+        /// Gets the survey from its unique url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         Task<Entities.Survey> GetSurveyFromUrlAsync(string url);
+
+        Task AddQuestionsAsync(int surveyId, List<int> questions);
     }
 }

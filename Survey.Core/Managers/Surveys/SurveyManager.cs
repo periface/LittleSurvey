@@ -2,13 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Domain.Repositories;
+using Abp.Domain.Services;
+using Abp.Domain.Uow;
 using Abp.UI;
 using Castle.Components.DictionaryAdapter;
 using Survey.Core.Entities;
 
 namespace Survey.Core.Managers.Surveys
 {
-    public class SurveyManager : ISurveyManager
+    public class SurveyManager : DomainService, ISurveyManager
     {
         private readonly IRepository<Entities.Survey> _surveyRepository;
         private readonly IRepository<Question> _questionRepository;
@@ -66,7 +68,28 @@ namespace Survey.Core.Managers.Surveys
 
         public Task DeleteSurveyAsync(Entities.Survey survey)
         {
+            DeleteRelations(survey.Id);
+            DeleteAnswers(survey.Id);
             return _surveyRepository.DeleteAsync(survey);
+        }
+
+        private void DeleteAnswers(int surveyId)
+        {
+            var answers = _surveyQuestionAnswerRepository.GetAllList(a => a.SurveyId == surveyId);
+            foreach (var surveyQuestionAnswer in answers)
+            {
+                _surveyQuestionAnswerRepository.Delete(surveyQuestionAnswer);
+            }
+        }
+
+        private void DeleteRelations(int surveyId)
+        {
+            var relations = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
+
+            foreach (var surveyQuestion in relations)
+            {
+                _surveyQuestionRepository.Delete(surveyQuestion);
+            }
         }
 
         public void DeleteSurvey(Entities.Survey survey)
@@ -82,9 +105,35 @@ namespace Survey.Core.Managers.Surveys
             var question = _questionRepository.FirstOrDefault(a => a.Id == questionId);
 
             if (question == null) return Task.CompletedTask;
-
+            
             return _surveyQuestionRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestion(surveyId, questionId));
 
+        }
+        public async Task AddQuestionsAsync(int surveyId, List<int> questions)
+        {
+            ClearQuestions(surveyId);
+            foreach (var questionId in questions)
+            {
+
+                var question = _questionRepository.FirstOrDefault(a => a.Id == questionId);
+
+                if (question == null) return;
+
+
+                await _surveyQuestionRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestion(surveyId, questionId));
+            }
+
+        }
+        private void ClearQuestions(int surveyId)
+        {
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.SoftDelete))
+            {
+                var elms = _surveyQuestionRepository.GetAllList(a => a.SurveyId == surveyId);
+                foreach (var elm in elms)
+                {
+                    _surveyQuestionRepository.Delete(elm);
+                }
+            }
         }
 
         public Task AddQuestionAsync(Question question, int surveyId)
@@ -190,7 +239,7 @@ namespace Survey.Core.Managers.Surveys
             var result = new Dictionary<QuestionWithOffered, Answer>();
 
             List<QuestionWithOffered> questionWithOffereds = new EditableList<QuestionWithOffered>();
-            var questionAssignment = (await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId)).OrderBy(a=>a.Order);
+            var questionAssignment = (await _surveyQuestionRepository.GetAllListAsync(a => a.SurveyId == surveyId)).OrderBy(a => a.Order);
 
             foreach (var surveyQuestion in questionAssignment)
             {
@@ -210,7 +259,7 @@ namespace Survey.Core.Managers.Surveys
                 //Answer from the user 
                 var answer =
                     _answerRepository.GetAllIncluding(a => a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
-                                                                                                  a.CreatorUserId == abpSessionUserId) ??
+                                                                                                  a.CreatorUserId == abpSessionUserId && a.SurveyId == surveyId) ??
                     new Answer()
                     {
                         SelectedAnswers = new List<SelectedAnswer>()
@@ -246,7 +295,7 @@ namespace Survey.Core.Managers.Surveys
                 //Answer from the user 
                 var answer =
                     _answerRepository.GetAllIncluding(a => a.SelectedAnswers).FirstOrDefault(a => a.QuestionId == question.Question.Id &&
-                                                            a.CreatorUserId == abpSessionUserId);
+                                                            a.CreatorUserId == abpSessionUserId && a.SurveyId == surveyId);
 
                 if (answer == null) answer = new Answer()
                 {

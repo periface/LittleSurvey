@@ -28,7 +28,7 @@ namespace Survey.Core.Managers.Questions
 
         public Task<int> CreateQuestionAsync(string text, bool inputAllowMultipleAnswers)
         {
-            var question = new Question(text){AllowMultipleAnswers = inputAllowMultipleAnswers};
+            var question = new Question(text) { AllowMultipleAnswers = inputAllowMultipleAnswers };
             return _questionRepository.InsertOrUpdateAndGetIdAsync(question);
         }
 
@@ -126,7 +126,7 @@ namespace Survey.Core.Managers.Questions
                     }
                 }
             }
-            
+
         }
 
         private void ClearAnswers(int foundId)
@@ -147,6 +147,22 @@ namespace Survey.Core.Managers.Questions
         {
             return _surveyQuestionAnswerRepository.InsertOrUpdateAndGetIdAsync(new SurveyQuestionAnswer(surveyId, questionId,
                  idPredefinedAnswer));
+        }
+
+        public List<Question> GetQuestionsForSurveyAsync(int id)
+        {
+            var relations = _suveryQuestionsRepository.GetAllList(a => a.SurveyId == id);
+            var listOfRelations = relations.Select(a => a.QuestionId);
+            var questions = _questionRepository.GetAllList(a => !listOfRelations.Contains(a.Id));
+            return questions;
+        }
+
+        public List<Question> GetQuestionsForSurveyInvertedAsync(int surveyId)
+        {
+            var relations = _suveryQuestionsRepository.GetAllList(a => a.SurveyId == surveyId);
+            var listOfRelations = relations.Select(a => a.QuestionId);
+            var questions = _questionRepository.GetAllList(a => listOfRelations.Contains(a.Id));
+            return questions;
         }
     }
 }

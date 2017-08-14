@@ -159,9 +159,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\SurveyAdmin\Index.js" />
+    <EmbeddedResource Include="Views\Survey\LoadSurvey.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AnswersAdminController.cs" />
+    <Compile Include="Controllers\QuestionAdminController.cs" />
     <Compile Include="Controllers\SurveyAdminController.cs" />
     <Compile Include="Controllers\SurveyController.cs" />
     <Compile Include="Controllers\SurveyControllerBase.cs" />
@@ -174,10 +178,13 @@
     <Content Include="packages.config" />
     <EmbeddedResource Include="Views\Survey\Index.cshtml" />
     <EmbeddedResource Include="Views\Survey\GetNextQuestion.cshtml" />
-    <EmbeddedResource Include="Views\Survey\Survey.cshtml" />
+    <EmbeddedResource Include="Views\Survey\LoadSurvey.cshtml" />
     <EmbeddedResource Include="Views\Shared\_Layout_Survey.cshtml" />
     <EmbeddedResource Include="Views\_ViewStart.cshtml" />
     <EmbeddedResource Include="Views\SurveyAdmin\Index.cshtml" />
+    <EmbeddedResource Include="Views\QuestionAdmin\Index.cshtml" />
+    <EmbeddedResource Include="Views\AnswersAdmin\Index.cshtml" />
+    <EmbeddedResource Include="Views\SurveyAdmin\AddQuestions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

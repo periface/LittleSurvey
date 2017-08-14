@@ -19,7 +19,7 @@ namespace Survey.Web.Controllers
             return View(surveys);
         }
 
-        public async Task<ActionResult> Survey(string surveyurl)
+        public async Task<ActionResult> LoadSurvey(string surveyurl)
         {
             var survey = await _surveyAppService.GetSurveyFirstQuestion(surveyurl);
             return View(survey);

@@ -26,7 +26,31 @@ namespace Survey.Core.Managers.Questions
         void SetSurvey(int questionId, int surveyId);
         Task<List<Question>> GetQuestionsFromSurvey(int surveyId);
         Task Answer(int surveyId, int questionId, int[] offeredAnswersId, string otherText, long? abpSessionUserId);
+        /// <summary>
+        /// Creates a new predefined answer
+        /// </summary>
+        /// <param name="txt"></param>
+        /// <returns></returns>
         Task<int> CreatePredefinedAnswer(string txt);
+        /// <summary>
+        /// Sets the predefined answer for the question in the survey
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <param name="questionId"></param>
+        /// <param name="idPredefinedAnswer"></param>
+        /// <returns></returns>
         Task SetPredefinedAnswer(int surveyId, int questionId, int idPredefinedAnswer);
+        /// <summary>
+        /// Get all assigned questions for the survey
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        List<Question> GetQuestionsForSurveyAsync(int id);
+        /// <summary>
+        /// Get all assigned questions for the survey
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <returns></returns>
+        List<Question> GetQuestionsForSurveyInvertedAsync(int surveyId);
     }
 }

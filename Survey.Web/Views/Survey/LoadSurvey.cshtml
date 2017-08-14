@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "title";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout_Survey.cshtml";
 }
 
 <h2>@Model.Description</h2>
@@ -36,7 +36,10 @@
                             </div>
                         }
                     }
-
+                    @if (!Model.Answer.OfferedAnswers.Any())
+                    {
+                        <input type="text" class="OtherText form-control" required="" name="Question" value="@Model.Answer.OtherText" />
+                    }
                     <ul class="list-inline pull-right">
                         @if (Model.Answer.PrevQuestion > 0)
                         {
@@ -62,27 +65,6 @@
 
 
 @section Scripts{
-    <script>
-        $("body").on("click", ".next-step", function () {
-            var surveyId = $(this).data("survey");
-            var nextId = $(this).data("next");
-
-            var service = abp.services.app.survey;
-
-            service.answerQuestion({
-                SurveyId: surveyId,
-                QuestionId: $("#QuestionId").val(),
-                OfferedAnswerIds: [$("input:radio[name=Question]:checked").val()]
-            }).done(function () {
-                if (nextId == 0) {
-                    window.location.reload();
-                } else {
-                    $("#survey_section").load("/Home/GetNextQuestion?questionId=" + nextId + "&surveyId=" + surveyId);
-                }
-                
-            });
-
-
-        });
-    </script>
+  
+    <script src="~/Views/Survey/LoadSurvey.js"></script>
 }

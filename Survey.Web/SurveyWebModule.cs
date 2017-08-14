@@ -10,8 +10,6 @@ namespace Survey.Web
     {
         public override void Initialize()
         {
-            var nameSpace = typeof(SurveyWebModule);
-            var fullNmspc = nameSpace.Namespace;
             IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
         }
 
